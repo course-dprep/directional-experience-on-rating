@@ -16,10 +16,10 @@ setwd("your data path")
 title_ratings <- read_tsv("title.ratings.tsv")  
 title_crew    <- read_tsv("title.crew.tsv")        
 name_basics   <- read_tsv("name.basics.tsv")                
-
-title_basics <- read_tsv("title.basics.tsv") %>% 
-  filter(titleType == "movie") %>%
-  select(tconst, runtimeMinutes, genres)
+title_basics <- read_tsv("title.basics.tsv")
 
 
 #different steps in your project.
+title_basics <- read_tsv("title.basics.tsv") %>% 
+  filter(titleType == "movie") %>%
+  select(tconst, runtimeMinutes, genres)
