@@ -1,9 +1,3 @@
-> **Important:** This is a template repository to help you set up your team project.  
->  
-> You are free to modify it based on your needs. For example, if your data is downloaded using *multiple* scripts instead of a single one (as shown in `\data\`), structure the code accordingly. The same applies to all other starter files—adapt or remove them as needed.  
->  
-> Feel free to delete this text.
-
 
 # Does directional experience influence IMDb ratings? 
 ## Examining how director experience predicts IMDb ratings and how this relationship differs between drama and action movies.
@@ -29,13 +23,13 @@ For studios and investors making decisions, insights into how directors´ experi
 ## Data
 We used the following datasets: 
 
-Name.basics.tsv
+*Name.basics.tsv*
 
-Title.basics.tsv
+*Title.basics.tsv*
 
-Title.crew.tsv
+*Title.crew.tsv*
 
-Title.ratings.tsv
+*Title.ratings.tsv*
 
 The data was obtained from the IMDb database. 
 
