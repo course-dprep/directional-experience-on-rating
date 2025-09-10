@@ -1,0 +1,73 @@
+---
+title: "document_project_data_preparation_group10_PDFmarkup."
+author: "Group 10"
+date: "2025-09-04"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+Daan Bankers              snr:2100281
+Luc Vesters				        snr:2145531
+Seppe Bogers				      snr:2080522
+Melvin Hong				        snr:2146253
+Wouter van der Linden			snr:2116790
+Marvin  Herwig			    	snr:2138521
+
+Research Question
+
+To what extent does a director’s experience( measured as the cumulative number of minutes of all movies previously directed) predict a movie’s IMDb rating, and is this relationship moderated by movie genre (drama vs. action)?
+
+Academically Relevant
+
+This study contributes to research on the movie industry by examining how directors’ cumulative experience predicts movie evaluations. We use total directed minutes, which captures experience more precisely. Then the length of the movies give less experience when it’s rather short than a few very long ones. The IMDb ratings capture consumer evaluation patterns. Furthermore, genre could play a crucial role, given that the genre drama is more critically evaluated than the genre action, which is more popular. This suggests genre could moderate this relationship.
+
+Managerially Relevant
+
+For studios and investors facing uncertainty, insights into how directors experience influences audience rating are useful. If experience predicts higher quality, the decision for an experienced director could be made easier. Recognizing genre differences helps managers allocate talent effectively. While technical production could dominate the genre drama. This reduces risk and aligns creative choices with market demands.
+
+Statistical Testing Method
+
+Multiple regression analysis is suitable for testing a metric independent variable(director experience) and a metric independent variable(IMDb rating), while including a nonmetric moderator (genre: drama vs. action). By applying this method, this estimates the direct and indirect effect in a single model. It also allows controlling for other factors, making the results more interpretable.
+
+
+
+
+
+```{r}
+#install the readr packages
+install.packages("readr")
+install.packages("tidyverse")
+install.packages("tidyr")
+install.packages("dplyr")
+library("readr")
+library("tidyverse")
+library("tidyr")
+library("dplyr")
+
+
+# set the right working directory yourself
+
+# download the right pages and start filtering and selecting the first data
+
+title_ratings <- read_tsv("title.ratings.tsv")  
+title_crew <- read_tsv("title.crew.tsv")        
+colnames(title_crew)
+head(title_crew)
+name_basics <- read_tsv("name.basics.tsv")                
+
+title_basics <- read_tsv("title.basics.tsv")  %>% filter(titleType == "movie") %>%
+  select(tconst, runtimeMinutes, genres)
+movie_ids <- title_basics$tconst
+filter(tconst %in% movie_ids)
+
+install.packages("tinytex")
+library(tinytex)
+tinytex::is_tinytex()
+tinytex::install_tinytex()
+chooseCRANmirror()
+install.packages("readr")
+library("readr")
+Sys.which("pdflatex")
+rmarkdown::render("project_data_preparation_group10_goodversion.Rmd", output_format = "pdf_document")
+```
