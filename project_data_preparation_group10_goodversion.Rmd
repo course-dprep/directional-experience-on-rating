@@ -3,8 +3,8 @@ title: "document_project_data_preparation_group10_PDFmarkup."
 author: "Group 10"
 date: "2025-09-04"
 output:
-  pdf_document: default
   word_document: default
+  pdf_document: default
 ---
 
 Daan Bankers              snr:2100281
@@ -31,43 +31,56 @@ Statistical Testing Method
 Multiple regression analysis is suitable for testing a metric independent variable(director experience) and a metric independent variable(IMDb rating), while including a nonmetric moderator (genre: drama vs. action). By applying this method, this estimates the direct and indirect effect in a single model. It also allows controlling for other factors, making the results more interpretable.
 
 
+```{r load_packages, echo=FALSE, message=FALSE, warning=FALSE}
 
+load_pkg <- function(pkg){
+  if(!require(pkg, character.only = TRUE)){
+    install.packages(pkg, dependencies = TRUE)
+    library(pkg, character.only = TRUE)
+  }
+}
+packages <- c("readr", "tidyverse")
+lapply(packages, load_pkg)
 
+```
 
-```{r}
-#install the readr packages
-install.packages("readr")
-install.packages("tidyverse")
-install.packages("tidyr")
-install.packages("dplyr")
-library("readr")
-library("tidyverse")
-library("tidyr")
-library("dplyr")
+```{r download_data, echo = FALSE, message=FALSE, warning=FALSE}
+if(!dir.exists("data/raw_data")){
+  dir.create("data/raw_data", recursive = TRUE)
+}
 
+# URLs from the IMDb data
+urls <- list(
+  ratings = "https://datasets.imdbws.com/title.ratings.tsv.gz",
+  crew = "https://datasets.imdbws.com/title.crew.tsv.gz",
+  name_basics = "https://datasets.imdbws.com/name.basics.tsv.gz",
+  title_basics = "https://datasets.imdbws.com/title.basics.tsv.gz"
+)
 
-# set the right working directory yourself
+for(name in names(urls)){
+  destfile <- paste0("data/raw_data/", name, ".tsv.gz")
+  if(!file.exists(destfile)){
+    download.file(urls[[name]], destfile)
+  }
+}
+```
 
-# download the right pages and start filtering and selecting the first data
-
-title_ratings <- read_tsv("title.ratings.tsv")  
-title_crew <- read_tsv("title.crew.tsv")        
-colnames(title_crew)
-head(title_crew)
-name_basics <- read_tsv("name.basics.tsv")                
-
-title_basics <- read_tsv("title.basics.tsv")  %>% filter(titleType == "movie") %>%
+```{r preparing_data, echo = FALSE, message=FALSE, warning=FALSE}
+title_ratings <- readr::read_tsv("data/raw_data/ratings.tsv.gz")
+title_crew <- readr::read_tsv("data/raw_data/crew.tsv.gz")
+name_basics <- readr::read_tsv("data/raw_data/name_basics.tsv.gz")
+title_basics <- readr::read_tsv("data/raw_data/title_basics.tsv.gz") %>% 
+  filter(titleType == "movie") %>% 
   select(tconst, runtimeMinutes, genres)
-movie_ids <- title_basics$tconst
-filter(tconst %in% movie_ids)
 
-install.packages("tinytex")
-library(tinytex)
-tinytex::is_tinytex()
-tinytex::install_tinytex()
-chooseCRANmirror()
-install.packages("readr")
-library("readr")
-Sys.which("pdflatex")
-rmarkdown::render("project_data_preparation_group10_goodversion.Rmd", output_format = "pdf_document")
+# Filter and merge
+title_ratings_movies <- title_ratings %>% semi_join(title_basics, by = "tconst")
+title_crew_movies <- title_crew %>% semi_join(title_basics, by = "tconst")
+
+imdb_movies <- title_basics %>%
+  left_join(title_ratings_movies, by = "tconst") %>%
+  left_join(title_crew_movies, by = "tconst")
+
+# Save as CSV
+readr::write_csv(imdb_movies, "data/imdb_movies_dataset.csv")
 ```
