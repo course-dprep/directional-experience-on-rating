@@ -20,16 +20,19 @@ For studios and investors making decisions, insights into how directors´ experi
 
 **To what extent does a director’s prior experience (measured as the cumulative minutes of movies directed) predict a movie’s IMDb rating, and does this relationship differ between action and drama movies?**
 
+##Conceptual model
+![Conceptual model is unavailable at the moment](conceptualmodel.jpeg)
+
 ## Data
 We used the following datasets: 
 
-*Name.basics.tsv*
+*name.basics.tsv*
 
-*Title.basics.tsv*
+*title.basics.tsv*
 
-*Title.crew.tsv*
+*title.crew.tsv*
 
-*Title.ratings.tsv*
+*title.ratings.tsv*
 
 The data was obtained from the IMDb database. 
 
