@@ -15,9 +15,12 @@ Besides analysing the main effect of director’s experience on movie ratings, t
 ## Motivation
 
 *Academically Relevant*
+
 This study contributes to research on the movie industry by examining how directors’ cumulative experience predicts movie evaluations. The IMDb ratings capture consumer evaluation patterns. Prior research has shown that the director’s experience also influences the movie outcome. Directors with more experience are more likely to produce movies that achieve higher ratings (John et al., 2014). 
 Furthermore, genre could play a crucial role, Francemone et al. (2023) examined 9,068 movies over twenty years and found out that action movies tend to be more popular with a higher audience causing higher box office numbers and more IMDb reviews than drama movies. However, drama movies are strongly linked with critical acclaim and get higher ratings (Francemone et al., 2023). This evidence shows the importance of considering genre when analysing how directional experience relates to movie ratings. 
+
 *Managerially Relevant*
+
 For studios and investors making decisions, insights into how directors´ experience influences audience evaluations are a clear practical value. If director experience correlates with IMDb ratings, this makes hiring decisions easier. Experience may become a signal of quality and predictability of outcomes. Moreover, it is essential to consider differences in genres. Dramas typically rely more on director-driven elements (Francemone et al., 2023). In this context, director experience is more likely to enhance quality and reduce both artistic and commercial risk. Action movies, by contrast, often depend more heavily of technical production capacities. Here, managers may mitigate risk more effectively by investing in technical teams, rather than relying solely on director experience. For decision-makers, this implies differentiated allocation of talent and budget.
 
 
@@ -25,10 +28,15 @@ For studios and investors making decisions, insights into how directors´ experi
 
 ## Data
 We used the following datasets: 
+
 Name.basics.tsv
+
 Title.basics.tsv
+
 Title.crew.tsv
+
 Title.ratings.tsv
+
 The data was obtained from the IMDb database. 
 
 - How many observations are there in the final dataset? 
@@ -68,12 +76,19 @@ Moreover, multiple regression provides a flexible framework to test whether the 
 This project is set up as part of the Master's course [Data Preparation & Workflow Management](https://dprep.hannesdatta.com/) at the [Department of Marketing](https://www.tilburguniversity.edu/about/schools/economics-and-management/organization/departments/marketing), [Tilburg University](https://www.tilburguniversity.edu/), the Netherlands.
 
 The project is implemented by team 10
+
 Members: 
+
 Daan Bankers              snr:2100281
+
 Luc Vesters				        snr:2145531
+
 Seppe Bogers				      snr:2080522
+
 Melvin Hong				        snr:2146253
+
 Wouter van der Linden			snr:2116790
+
 Marvin  Herwig			    	snr:2138521
 
 
