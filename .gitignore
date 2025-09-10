@@ -3,3 +3,4 @@
 .DS_Store
 .Rproj.user
 data/raw_data
+data/processed
