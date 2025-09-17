@@ -5,7 +5,7 @@
 This study’s aim is to analyse whether a directors experience leads to higher IMDb ratings and whether this link depends on the type of movie (drama vs action). Directional experience will be measured as the cumulative number of minutes of movies directed in the past, rather than the number of movies. This choice reflects the fact that movies vary greatly in length. This measure accounts for both the quantity and scale of the director’s past work.  
 Besides analysing the main effect of director’s experience on movie ratings, this study also investigates this relationship with the moderating effect of action- and drama movies. 
 
-![Image on director experience is unavailable](ggpairs1.png)
+![Image on director experience is unavailable](plots/ggpairs1.png)
 
 ## Motivation
 
@@ -22,7 +22,7 @@ For studios and investors making decisions, insights into how directors´ experi
 **To what extent does a director’s prior experience (measured as the cumulative minutes of movies directed) predict a movie’s IMDb rating, and does this relationship differ between action and drama movies?**
 
 ## Conceptual model
-![Conceptual model is unavailable at the moment](conceptualmodel.jpeg)
+![Conceptual model is unavailable at the moment](plots/conceptualmodel.jpeg)
 
 ## Data
 We used the following datasets: 
