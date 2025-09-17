@@ -1,0 +1,86 @@
+---
+title: "document_project_data_preparation_group10_PDFmarkup."
+author: "Group 10"
+date: "2025-09-04"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+Daan Bankers              snr:2100281
+Luc Vesters				        snr:2145531
+Seppe Bogers				      snr:2080522
+Melvin Hong				        snr:2146253
+Wouter van der Linden			snr:2116790
+Marvin  Herwig			    	snr:2138521
+
+Research Question
+
+To what extent does a director’s experience( measured as the cumulative number of minutes of all movies previously directed) predict a movie’s IMDb rating, and is this relationship moderated by movie genre (drama vs. action)?
+
+Academically Relevant
+
+This study contributes to research on the movie industry by examining how directors’ cumulative experience predicts movie evaluations. We use total directed minutes, which captures experience more precisely. Then the length of the movies give less experience when it’s rather short than a few very long ones. The IMDb ratings capture consumer evaluation patterns. Furthermore, genre could play a crucial role, given that the genre drama is more critically evaluated than the genre action, which is more popular. This suggests genre could moderate this relationship.
+
+Managerially Relevant
+
+For studios and investors facing uncertainty, insights into how directors experience influences audience rating are useful. If experience predicts higher quality, the decision for an experienced director could be made easier. Recognizing genre differences helps managers allocate talent effectively. While technical production could dominate the genre drama. This reduces risk and aligns creative choices with market demands.
+
+Statistical Testing Method
+
+Multiple regression analysis is suitable for testing a metric independent variable(director experience) and a metric independent variable(IMDb rating), while including a nonmetric moderator (genre: drama vs. action). By applying this method, this estimates the direct and indirect effect in a single model. It also allows controlling for other factors, making the results more interpretable.
+
+
+```{r load_packages, echo=FALSE, message=FALSE, warning=FALSE}
+
+load_pkg <- function(pkg){
+  if(!require(pkg, character.only = TRUE)){
+    install.packages(pkg, dependencies = TRUE)
+    library(pkg, character.only = TRUE)
+  }
+}
+packages <- c("readr", "tidyverse")
+lapply(packages, load_pkg)
+
+```
+
+```{r download_data, echo = FALSE, message=FALSE, warning=FALSE}
+if(!dir.exists("data/raw_data")){
+  dir.create("data/raw_data", recursive = TRUE)
+}
+
+# URLs from the IMDb data
+urls <- list(
+  ratings = "https://datasets.imdbws.com/title.ratings.tsv.gz",
+  crew = "https://datasets.imdbws.com/title.crew.tsv.gz",
+  name_basics = "https://datasets.imdbws.com/name.basics.tsv.gz",
+  title_basics = "https://datasets.imdbws.com/title.basics.tsv.gz"
+)
+
+for(name in names(urls)){
+  destfile <- paste0("data/raw_data/", name, ".tsv.gz")
+  if(!file.exists(destfile)){
+    download.file(urls[[name]], destfile)
+  }
+}
+```
+
+```{r preparing_data, echo = FALSE, message=FALSE, warning=FALSE}
+title_ratings <- readr::read_tsv("data/raw_data/ratings.tsv.gz")
+title_crew <- readr::read_tsv("data/raw_data/crew.tsv.gz")
+name_basics <- readr::read_tsv("data/raw_data/name_basics.tsv.gz")
+title_basics <- readr::read_tsv("data/raw_data/title_basics.tsv.gz") %>% 
+  filter(titleType == "movie") %>% 
+  select(tconst, runtimeMinutes, genres)
+
+# Filter and merge
+title_ratings_movies <- title_ratings %>% semi_join(title_basics, by = "tconst")
+title_crew_movies <- title_crew %>% semi_join(title_basics, by = "tconst")
+
+imdb_movies <- title_basics %>%
+  left_join(title_ratings_movies, by = "tconst") %>%
+  left_join(title_crew_movies, by = "tconst")
+
+# Save as CSV
+readr::write_csv(imdb_movies, "data/imdb_movies_dataset.csv")
+```
