@@ -1,3 +1,9 @@
+# Installing and loading the required packages
+install.packages("dplyr")
+install.packages("GGally")
+install.packages("ggplot2")
+install.packages("tidyr")
+
 library(dplyr)
 library(GGally)
 library(ggplot2)
@@ -7,16 +13,18 @@ library(tidyr)
 df1 <- left_join(title_ratings, title_basics, by = "tconst")
 df_merged <- left_join(df1, title_crew, by = "tconst")
 
-# Splits meerdere regisseurs in aparte rijen
+# Split the directors in multiple rows
 df_split <- df_merged %>%
   separate_rows(directors, sep = ",")
 
-# ✅ Filter: verwijder onbekende regisseurs en ongeldige runtime
+# Filter by removing NA's of directors
 df_clean <- df_split %>%
   filter(directors != "\\N", runtimeMinutes != "\\N") %>%
   mutate(runtimeMinutes = as.numeric(runtimeMinutes))  # Nu veilig
 
-# Bereken stats per regisseur
+# !!RUNTIME MINUTES NA'S NOG VULLEN!!
+
+# Calculating stats per director
 director_stats <- df_clean %>%
   group_by(directors) %>%
   summarise(
@@ -26,26 +34,19 @@ director_stats <- df_clean %>%
   ) %>%
   ungroup()
 
-# Filter eventueel regisseurs met te weinig films
-director_stats <- director_stats %>%
-  filter(film_count >= 3)
-
 # ggpairs plot
 ggpairs(director_stats,
         columns = c("avg_rating", "film_count", "avg_runtime"),
         title = "Director Statistics")
 
-
-library(ggplot2)
-
-# Nieuwe variabele maken
+# Create new variable
 director_stats$total_runtime <- director_stats$avg_runtime * director_stats$film_count
 
-# Regressiemodel
+# Regression model
 model <- lm(avg_rating ~ total_runtime, data = director_stats)
 summary(model)
 
-# Scatterplot met regressielijn
+# Scatter plot with regression line
 ggplot(director_stats %>% dplyr::filter(total_runtime <= 20000),
        aes(x = total_runtime, y = avg_rating)) +
   geom_point(color = "blue", alpha = 0.6, size = 3) +
