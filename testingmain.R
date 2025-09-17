@@ -36,3 +36,23 @@ ggpairs(director_stats,
         title = "Director Statistics")
 
 
+library(ggplot2)
+
+# Nieuwe variabele maken
+director_stats$total_runtime <- director_stats$avg_runtime * director_stats$film_count
+
+# Regressiemodel
+model <- lm(avg_rating ~ total_runtime, data = director_stats)
+summary(model)
+
+# Scatterplot met regressielijn
+ggplot(director_stats %>% dplyr::filter(total_runtime <= 20000),
+       aes(x = total_runtime, y = avg_rating)) +
+  geom_point(color = "blue", alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(
+    x = "Total runtime (avg_runtime * film_count)",
+    y = "Average rating",
+    title = "Linear Regression: Runtime vs Rating (≤ 20,000)"
+  ) +
+  theme_minimal()
