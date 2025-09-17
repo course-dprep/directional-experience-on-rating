@@ -65,6 +65,9 @@ Moreover, multiple regression provides a flexible framework to test whether the 
 
 *Provide step-by-step instructions that have to be followed to run this workflow.*
 
+## Processing missing values
+![Image on processing missing values in the dataset IMDb_movies](plots/Missing_values.png)
+
 ## Sources
 - Francemone, C. J., Kryston, K., & Grizzard, M. (2023). Examining genre success, co-occurrence, release, and production of 9,068 films over twenty years. Poetics, 99, 101794. https://doi.org/10.1016/j.poetic.2023.101794
 - John, K., Ravid, S. A., & Sunder, J. (2014). Managerial ability and success: Evidence from the career paths of film directors. Journal Of Corporate Finance. http://dx.doi.org/10.1016/j.jcorpfin.2014.11.001
