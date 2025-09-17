@@ -57,3 +57,27 @@ ggplot(director_stats %>% dplyr::filter(total_runtime <= 20000),
     title = "Linear Regression: Runtime vs Rating (≤ 20,000)"
   ) +
   theme_minimal()
+
+# Testing NA's
+summary(imdb_movies)
+imdb_movies %>%
+  filter(tconst == "\\N") %>%  # Note the double backslash to escape the backslash
+  summarise(count = n())
+imdb_movies %>%
+  filter(runtimeMinutes == "\\N") %>%  # Note the double backslash to escape the backslash
+  summarise(count = n())
+imdb_movies %>%
+  filter(genres == "\\N") %>%  # Note the double backslash to escape the backslash
+  summarise(count = n())
+imdb_movies %>%
+  filter(averageRating == "\\N") %>%  # Note the double backslash to escape the backslash
+  summarise(count = n())
+imdb_movies %>%
+  filter(numVotes == "\\N") %>%  # Note the double backslash to escape the backslash
+  summarise(count = n())
+imdb_movies %>%
+  filter(directors == "\\N") %>%  # Note the double backslash to escape the backslash
+  summarise(count = n())
+imdb_movies %>%
+  filter(writers == "\\N") %>%  # Note the double backslash to escape the backslash
+  summarise(count = n())
