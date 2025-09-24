@@ -11,13 +11,11 @@ lapply(packages, load_pkg)
 #set directory
 data_dir <- "../../data"
 
-# Filter and merge
-title_ratings_movies <- title_ratings %>% semi_join(title_basics, by = "tconst")
-title_crew_movies <- title_crew %>% semi_join(title_basics, by = "tconst")
-
-imdb_movies <- title_basics %>%
-  left_join(title_ratings_movies, by = "tconst") %>%
-  left_join(title_crew_movies, by = "tconst")
+#Merge data in a single datafile
+imdb_movies <- title_basics
+imdb_movies <- imdb_movies %>%
+  full_join(title_ratings, by = "tconst") %>%
+  full_join(title_crew, by = "tconst")
 
 # Save as csv
 readr::write_csv(imdb_movies, "data/imdb_movies_dataset.csv")

@@ -37,4 +37,4 @@ title_crew <- readr::read_tsv("data/raw_data/crew.tsv.gz")
 name_basics <- readr::read_tsv("data/raw_data/name_basics.tsv.gz")
 title_basics <- readr::read_tsv("data/raw_data/title_basics.tsv.gz") %>% 
   filter(titleType == "movie") %>% 
-  select(tconst, runtimeMinutes, genres)
+  select(tconst, runtimeMinutes, genres, startYear)
