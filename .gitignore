@@ -5,3 +5,4 @@
 data/raw_data
 data/processed
 .Rhistory
+data/imdb_movies_dataset.csv
