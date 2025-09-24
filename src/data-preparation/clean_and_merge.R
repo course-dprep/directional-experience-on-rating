@@ -5,7 +5,7 @@ load_pkg <- function(pkg){
     library(pkg, character.only = TRUE)
   }
 }
-packages <- c("readr", "tidyverse")
+packages <- c("readr", "tidyverse", "dplyr")
 lapply(packages, load_pkg)
 
 #set directory
@@ -65,3 +65,15 @@ title_ratings_cols <- tibble(
     "number of votes the title has received"
   )
 )
+
+# Converting \N to NA in imdb_movies
+library("dplyr")
+imdb_movies <- imdb_movies %>%
+  mutate(across(c(runtimeMinutes, genres, startYear, directors, writers), ~ na_if(as.character(.), "\\N")))
+
+# Classing the different data
+imdb_movies <- imdb_movies %>%
+  mutate(
+    startYear = as.integer(startYear),
+    runtimeMinutes = as.numeric(runtimeMinutes)
+    )
