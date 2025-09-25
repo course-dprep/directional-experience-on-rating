@@ -1,32 +1,30 @@
+all: gen/output/visualization.pdf
 
-all: gen/output/visualization.pdf 
-
-#Step 1: Download data
-data/name.basics.tsv.gz data/title_basics.tsv.gz  data/crew.tsv.gz data/ratings.tsv.gz: src/data-preparation/download.R
-	R -e "dir.create('$(data)' recursive = T)"
+# Step 1: Download data
+data/name.basics.tsv.gz data/title_basics.tsv.gz data/crew.tsv.gz data/ratings.tsv.gz:
+	R -e "dir.create('data', recursive = TRUE)"
 	Rscript src/data-preparation/download.R
 
-#step 2: Clean and merge
-gen/temp/clean_and_merge.csv: src/data-preparation/clean_and_ merge.csv data/name.basics.tsv.gz data/title_basics.tsv.gz  data/crew.tsv.gz data/ratings.tsv.gz
-	R -e "dir.create('$(gen/temp)' recursive = T)"
-	Rscript scr/data-preparation/clean_and_merge.csv
+# Step 2: Clean and merge
+gen/temp/clean_and_merge.csv: data/name.basics.tsv.gz data/title_basics.tsv.gz data/crew.tsv.gz data/ratings.tsv.gz src/data-preparation/clean_and_merge.R
+	R -e "dir.create('gen/temp', recursive = TRUE)"
+	Rscript src/data-preparation/clean_and_merge.R
 
-#step 3: direct effect data prep
-gen/temp/dataprep_directeffect.csv: src/data-preparation/dataprep_directeffect.R src/data-preparation/clean_and_ merge.csv
-	R -e "dir.create('gen/temp/', recursive = T)"
+# Step 3: Direct effect data prep
+gen/temp/dataprep_directeffect.csv: src/data-preparation/dataprep_directeffect.R gen/temp/clean_and_merge.csv
 	Rscript src/data-preparation/dataprep_directeffect.R
 
-# step 4: moderate effect data prep
-gen/temp/dataprep_modeffect.csv: src/data-preparation/dataprep_modeffect.R src/data-preparation/dataprep_directeffect.R
-	R -e "dir.create('gen/temp/', recursive = T)"
+# Step 4: Moderate effect data prep
+gen/temp/dataprep_modeffect.csv: src/data-preparation/dataprep_modeffect.R gen/temp/dataprep_directeffect.csv
 	Rscript src/data-preparation/dataprep_modeffect.R
 
-#step 5: analyzing the data
+# Step 5: Analyzing the data
 gen/output/analysis.csv: src/analysis/analysis.R gen/temp/dataprep_modeffect.csv
-	R -e "dir.create('gen/output/', recursive = T)"
+	R -e "dir.create('gen/output', recursive = TRUE)"
 	Rscript src/analysis/analysis.R
 
-#step 6: visualization of the output
-gen/output/visualization.pdf: src/analysis/visualization.R src/analysis/analysis.R
-	R -e "dir.create('gen/output/', recursive = T)"
+# Step 6: Visualization of the output
+gen/output/visualization.pdf: src/analysis/visualization.R gen/output/analysis.csv
+	R -e "dir.create('gen/output', recursive = TRUE)"
 	Rscript src/analysis/visualization.R
+
