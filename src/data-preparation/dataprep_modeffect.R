@@ -35,5 +35,9 @@ director_genres <- films %>%
 # Fifth step, combine this dataset with director_stats
 data_mod <- director_stats %>%
   inner_join(director_genres %>% select(directors, dominant_genre), by = "directors")
+
+# Save results for Makefile tracking
+readr::write_csv(data_mod, "modeffect_data.csv")
+
 #With an inner_join you only keep the records where both datasets overlap.
 #####################################################################

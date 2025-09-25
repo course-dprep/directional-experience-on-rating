@@ -1,18 +1,18 @@
-# Default target: runs everything up to the last file
-all: processed_data/modeffect_data.csv
+# Default target
+all: modeffect_data.csv
 
 # Step 1: Download data
-raw_data/data.csv:  # ensures the data is downloaded into raw_data
+data/raw_data/ratings.tsv.gz data/raw_data/crew.tsv.gz data/raw_data/name_basics.tsv.gz data/raw_data/title_basics.tsv.gz:
 	Rscript download.R
 
 # Step 2: Clean and merge
-processed_data/cleaned_data.csv: raw_data/data.csv  # creates cleaned file
+data/imdb_movies_dataset.csv: data/raw_data/ratings.tsv.gz data/raw_data/crew.tsv.gz data/raw_data/name_basics.tsv.gz data/raw_data/title_basics.tsv.gz
 	Rscript clean_and_merge.R
 
 # Step 3: Direct effect prep
-processed_data/directeffect_data.csv: processed_data/cleaned_data.csv  # prepares direct effect data
+directeffect_data.csv: data/imdb_movies_dataset.csv
 	Rscript dataprep_directeffect.R
 
 # Step 4: Moderation effect prep
-processed_data/modeffect_data.csv: processed_data/directeffect_data.csv  # prepares moderation effect data
+modeffect_data.csv: directeffect_data.csv
 	Rscript dataprep_modeffect.R

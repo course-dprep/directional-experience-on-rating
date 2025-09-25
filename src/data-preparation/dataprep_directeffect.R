@@ -29,3 +29,6 @@ director_stats <- df_clean %>%
 # Filter directors with small amount of films
 director_stats <- director_stats %>%
   filter(film_count >= 3)
+
+# Save the results for Makefile tracking
+readr::write_csv(director_stats, "directeffect_data.csv")
