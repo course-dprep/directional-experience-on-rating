@@ -15,7 +15,8 @@ data_dir <- "../../data"
 imdb_movies <- title_basics
 imdb_movies <- imdb_movies %>%
   full_join(title_ratings, by = "tconst") %>%
-  full_join(title_crew, by = "tconst")
+  full_join(title_crew, by = "tconst") %>%
+  select(-writers)
 
 # Save as csv
 readr::write_csv(imdb_movies, "data/imdb_movies_dataset.csv")
@@ -69,11 +70,26 @@ title_ratings_cols <- tibble(
 # Converting \N to NA in imdb_movies
 library("dplyr")
 imdb_movies <- imdb_movies %>%
-  mutate(across(c(runtimeMinutes, genres, startYear, directors, writers), ~ na_if(as.character(.), "\\N")))
+  mutate(across(c(runtimeMinutes, genres, startYear, directors, averageRating), ~ na_if(as.character(.), "\\N")))
 
 # Classing the different data
-imdb_movies <- imdb_movies %>%
+imdb_directorstats <- imdb_movies %>%
   mutate(
     startYear = as.integer(startYear),
     runtimeMinutes = as.numeric(runtimeMinutes)
-    )
+    ) %>%
+  filter(directors != "\\N", runtimeMinutes != "\\N", startYear >= 1990) %>%
+  group_by(directors) %>%
+  summarise(
+    avg_rating = mean(averageRating, na.rm = TRUE),
+    film_count = n(),
+    avg_runtime = mean(runtimeMinutes, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+
+
+  
+
+
+
