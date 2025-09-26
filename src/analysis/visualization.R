@@ -12,6 +12,9 @@ ggpairs(director_stats,
 # Creating a new variable for director_stats
 director_stats$total_runtime <- director_stats$avg_runtime * director_stats$film_count
 
+#download the plot
+pdf("visualization.pdf")
+
 # Scatterplot with regressionline
 ggplot(director_stats %>% dplyr::filter(total_runtime <= 20000),
        aes(x = total_runtime, y = avg_rating)) +
