@@ -1,10 +1,12 @@
 all: gen/output/visualization.pdf
 
-# Step 1: Download data
-data/name.basics.tsv.gz data/title_basics.tsv.gz data/crew.tsv.gz data/ratings.tsv.gz:
+# Step 1 dowload the data
+data/downloaded.stamp: src/data-preparation/download.R
 	R -e "dir.create('data', recursive = TRUE)"
 	Rscript src/data-preparation/download.R
+	touch $@
 
+data/name.basics.tsv.gz data/title_basics.tsv.gz data/crew.tsv.gz data/ratings.tsv.gz: data/downloaded.stamp
 # Step 2: Clean and merge
 gen/temp/clean_and_merge.csv: data/name.basics.tsv.gz data/title_basics.tsv.gz data/crew.tsv.gz data/ratings.tsv.gz src/data-preparation/clean_and_merge.R
 	R -e "dir.create('gen/temp', recursive = TRUE)"
