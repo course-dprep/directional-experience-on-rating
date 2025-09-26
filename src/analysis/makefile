@@ -2,12 +2,13 @@
 
 all: results/figures.pdf results/analysis_results.csv
 
-include ../data-preparation/Makefile
-
 # Step 1: Run statistical analysis
-results/analysis_results.csv: ../data-preparation/processed_data/modeffect_data.csv analysis.R
+results/analysis_results.csv: analysis.R
+	$(MAKE) -C ../data-preparation ../data-preparation/processed_data/dataprep_modeffect.csv
+	mkdir -p results
 	Rscript analysis.R
 
 # Step 2: Generate visualizations
 results/figures.pdf: results/analysis_results.csv visualization.R
+	mkdir -p results
 	Rscript visualization.R
