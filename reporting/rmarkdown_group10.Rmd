@@ -36,19 +36,14 @@ In the first script, we (down)load the packages needed to run the complete Rscri
 ```{r load_packages, echo=FALSE, message=FALSE, warning=FALSE}
 
 #required packages
-load_pkg <- function(pkg){
-  if(!require(pkg, character.only = TRUE)){
-    install.packages(pkg, dependencies = TRUE)
-    library(pkg, character.only = TRUE)
-  }
-}
-packages <- c("readr", "tidyverse")
-lapply(packages, load_pkg)
+install.packages("readr")
+install.packages("tidyverse")
 
 ```
 
 
 #TEKST INVOEGEN MET UITLEGGEN WAT ER GEBEURT IN ONDERSTAANDE RSCRIPT
+The code below makes sure that the right data folder for the raw data is created. This code also includes a code that makes sure that the user is in the right working directory. The following datasets will be downloaded after the right working directory has been set: title_ratings.tsv, title_crew.tsv, name_basics.tsv, title_basics.tsv.
 
 ```{r download_data, echo = FALSE, message=FALSE, warning=FALSE}
 #set directory
@@ -79,7 +74,7 @@ for(name in names(urls)){
 ```
 
 #EXPLAIN HOW WE CREATED THE DATASET AND WHY WE USED THE FULLJOIN METHOD(MAXIMIZED DATA) AND WHAT WE CREATED TO GET OUR MAIN DATASET
-
+We first made sure that we merged the datasets that we needed. We chose to use a full_join because this way retained the maximum amount of data. After using the full_join we downloaded this dataset and saved this raw dataset as "imdb_movies_dataset". We also made operationalisation table to provide more information about the variables that are included in our dataset. The operationalisation tables are called: name_basics_cols, title_crew_cols, title_basics_cols and title_ratings_cols. The missing values in our imdb_movies_dataset were indicated with the as "\\N". We also changed this through code and made sure that the missing values were indicated with NA. This because we were able to use functions like "rm.na" or "is.na", which makes analysis easier. Finally we changed the class of runtimeMinutes to an integer and we changed the class of startYear to numeric. Both these variables were classified as characters. Changing them allowed us to perform stats and proper comparisions    
 
 ```{r preparing_data, echo = FALSE, message=FALSE, warning=FALSE}
 #Merge data in a single datafile
@@ -151,6 +146,7 @@ imdb_movies <- imdb_movies %>%
 ```
 
 # WE CREATED ANALYSIS AND VISUALIZATIONS BY USING THE FOLLOWING PACKAGES: DPLYR, GGALLY, GGPLOT2, TIDYR
+
 
 ```{r analysis_packages}
 #Loading packages
