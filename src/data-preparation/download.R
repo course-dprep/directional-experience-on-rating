@@ -5,13 +5,8 @@ install.packages(c("readr", "tidyverse"))
 packages <- c("readr", "tidyverse")
 lapply(packages, library, character.only = TRUE)
 
-# Creating folder raw data
-if(!dir.exists("data/raw_data")){
-  dir.create("data/raw_data", recursive = TRUE)
-}
-
-# Set working directory
-setwd("../../data/raw_data")
+# Set working directory to project root
+setwd("../../")
 
 # INPUT:
 # URLs for the IMDb datasets
@@ -39,13 +34,8 @@ title_basics <- readr::read_tsv("data/raw_data/title.basics.tsv.gz") %>%
   select(tconst, runtimeMinutes, genres, startYear)
 
 # OUTPUT
-# Creating folder processed data
-if(!dir.exists("data/processed")){
-  dir.create("data/processed", recursive = TRUE)
-}
-
 # Save cleaned datasets as .csv
-readr::write_csv(title_ratings, "data/processed/title_ratings_clean.csv")
-readr::write_csv(title_crew, "data/processed/title_crew_clean.csv")
-readr::write_csv(name_basics, "data/processed/name_basics_clean.csv")
-readr::write_csv(title_basics, "data/processed/title_basics_clean.csv")
+readr::write_csv(title_ratings, "gen/temp/title_ratings_clean.csv")
+readr::write_csv(title_crew, "gen/temp/title_crew_clean.csv")
+readr::write_csv(name_basics, "gen/temp/name_basics_clean.csv")
+readr::write_csv(title_basics, "gen/temp/title_basics_clean.csv")

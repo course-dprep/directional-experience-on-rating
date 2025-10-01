@@ -1,33 +1,35 @@
-#required packages
-load_pkg <- function(pkg){
-  if(!require(pkg, character.only = TRUE)){
-    install.packages(pkg, dependencies = TRUE)
-    library(pkg, character.only = TRUE)
-  }
-}
+# SETUP:
+# Installing and loading required packages
+install.packages(c("readr", "tidyverse", "dplyr"))
+
 packages <- c("readr", "tidyverse", "dplyr")
-lapply(packages, load_pkg)
+lapply(packages, library, character.only = TRUE)
 
-#set directory
-data_dir <- "../../data"
+# Set working directory
+getwd("../../")
 
-#Merge data in a single datafile
-imdb_movies <- title_basics
+# INPUT:
+# Naming the files in environment
+title_ratings_clean <- readr::read_tsv("processed/title_ratings_clean.csv")
+title_crew_clean <- readr::read_tsv("processed/title_crew_clean.csv")
+name_basics_clean <- readr::read_tsv("processed/name_basics_clean.csv")
+title_basics_clean <- readr::read_tsv("processed/title_basics_clean.csv")
+
+# TRANSFORMATION:
+# Merge data in a single data file
+imdb_movies <- title_basics_clean
 imdb_movies <- imdb_movies %>%
-  full_join(title_ratings, by = "tconst") %>%
-  full_join(title_crew, by = "tconst")
+  full_join(title_ratings_clean, by = "tconst") %>%
+  full_join(title_crew_clean, by = "tconst")
 
-# Save as csv
-readr::write_csv(imdb_movies, "data/imdb_movies_dataset.csv")
-
-# Column description
+# Column descriptions
 name_basics_cols <- tibble(
   column = c("nconst", "primaryName", "birthYear", "deathYear", "primaryProfession", "knownForTitles"),
   description = c(
     "alphanumeric unique identifier of the name/person",
     "name by which the person is most often credited",
     "in YYYY format",
-    "in YYYY format if applicable, else '\\N'",
+    "in YYYY format if applicable, else 'NA'",
     "the top-3 professions of the person",
     "titles the person is known for"
   )
@@ -51,7 +53,7 @@ title_basics_cols <- tibble(
     "the original title, in the original language",
     "0: non-adult title; 1: adult title",
     "represents the release year of a title. In the case of TV Series, it is the series start year",
-    "TV Series end year. '\\N' for all other title types",
+    "TV Series end year. 'NA' for all other title types",
     "primary runtime of the title, in minutes",
     "includes up to three genres associated with the title"
   )
@@ -66,8 +68,7 @@ title_ratings_cols <- tibble(
   )
 )
 
-# Converting \N to NA in imdb_movies
-library("dplyr")
+# Converting \\N to NA in imdb_movies
 imdb_movies <- imdb_movies %>%
   mutate(across(c(runtimeMinutes, genres, startYear, directors, writers), ~ na_if(as.character(.), "\\N")))
 
@@ -77,3 +78,7 @@ imdb_movies <- imdb_movies %>%
     startYear = as.integer(startYear),
     runtimeMinutes = as.numeric(runtimeMinutes)
     )
+
+# OUTPUT
+# Save imdb_movies as .csv
+readr::write_csv(imdb_movies, "gen/temp/imdb_movies.csv")
