@@ -33,7 +33,7 @@ title_basics <- readr::read_tsv("data/raw_data/title.basics.tsv.gz") %>%
   filter(titleType == "movie") %>% 
   select(tconst, runtimeMinutes, genres, startYear)
 
-# OUTPUT
+# OUTPUT 
 # Save cleaned datasets as .csv
 readr::write_csv(title_ratings, "gen/temp/title_ratings_clean.csv")
 readr::write_csv(title_crew, "gen/temp/title_crew_clean.csv")
