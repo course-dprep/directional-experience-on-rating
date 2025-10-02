@@ -4,23 +4,23 @@ install.packages(c("readr", "tidyverse", "dplyr"))
 
 packages <- c("readr", "tidyverse", "dplyr")
 lapply(packages, library, character.only = TRUE)
-
+getwd()
 # Set working directory
-getwd("../../")
+setwd("../../")
 
 # INPUT:
 # Naming the files in environment
-title_ratings_clean <- readr::read_tsv("processed/title_ratings_clean.csv")
-title_crew_clean <- readr::read_tsv("processed/title_crew_clean.csv")
-name_basics_clean <- readr::read_tsv("processed/name_basics_clean.csv")
-title_basics_clean <- readr::read_tsv("processed/title_basics_clean.csv")
+title_ratings <- readr::read_csv("data/raw_data/ratings.csv")
+title_crew <- readr::read_csv("data/raw_data/crew.csv")
+name_basics <- readr::read_csv("data/raw_data/name_basics.csv")
+title_basics <- readr::read_csv("data/raw_data/title_basics.csv")
 
 # TRANSFORMATION:
 # Merge data in a single data file
-imdb_movies <- title_basics_clean
+imdb_movies <- title_basics
 imdb_movies <- imdb_movies %>%
-  full_join(title_ratings_clean, by = "tconst") %>%
-  full_join(title_crew_clean, by = "tconst")
+  full_join(title_ratings, by = "tconst") %>%
+  full_join(title_crew, by = "tconst")
 
 # Column descriptions
 name_basics_cols <- tibble(
