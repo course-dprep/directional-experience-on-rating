@@ -9,18 +9,22 @@ getwd()
 setwd("../../")
 
 # INPUT:
-# Naming the files in environment
-title_ratings <- readr::read_csv("data/raw_data/ratings.csv")
-title_crew <- readr::read_csv("data/raw_data/crew.csv")
-name_basics <- readr::read_csv("data/raw_data/name_basics.csv")
-title_basics <- readr::read_csv("data/raw_data/title_basics.csv")
+# The following files are the input from download.r
+title_ratings 
+title_crew 
+name_basics 
+title_basics 
 
 # TRANSFORMATION:
 # Merge data in a single data file
 imdb_movies <- title_basics
 imdb_movies <- imdb_movies %>%
   full_join(title_ratings, by = "tconst") %>%
-  full_join(title_crew, by = "tconst")
+  full_join(title_crew, by = "tconst") 
+
+#Remove writers columns
+imdb_movies <- imdb_movies %>% 
+  select(-writers)
 
 # Column descriptions
 name_basics_cols <- tibble(
@@ -70,7 +74,7 @@ title_ratings_cols <- tibble(
 
 # Converting \\N to NA in imdb_movies
 imdb_movies <- imdb_movies %>%
-  mutate(across(c(runtimeMinutes, genres, startYear, directors, writers), ~ na_if(as.character(.), "\\N")))
+  mutate(across(c(runtimeMinutes, genres, startYear, directors), ~ na_if(as.character(.), "\\N")))
 
 # Classing the different data
 imdb_movies <- imdb_movies %>%
@@ -78,7 +82,8 @@ imdb_movies <- imdb_movies %>%
     startYear = as.integer(startYear),
     runtimeMinutes = as.numeric(runtimeMinutes)
     )
-
 # OUTPUT
 # Save imdb_movies as .csv
+dir.create("gen")
+dir.create("gen/temp")
 readr::write_csv(imdb_movies, "gen/temp/imdb_movies.csv")
