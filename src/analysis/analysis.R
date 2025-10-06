@@ -1,31 +1,102 @@
-#Loading packages
-library(dplyr)
-library(GGally)
-library(ggplot2)
-library(tidyr)
+#SETUP
+install.packages(c("readr", "tidyverse", "dplyr", "ggplot2"))
 
-# input from the dataprep_directeffect and dataprep_modeffect
-readr::write_csv(director_stats, "directeffect_data.csv")
-readr::write_csv(data_mod, "modeffect_data.csv")
+packages <- c("readr", "tidyverse", "dplyr", "ggplot2")
+lapply(packages, library, character.only = TRUE)
 
-# Creating a new variable for director_stats
-director_stats$total_runtime <- director_stats$avg_runtime * director_stats$film_count
+getwd() #If working directory is not right, set your working directory to the root directory
 
-# Regressionmodel
-model <- lm(avg_rating ~ total_runtime, data = director_stats)
-summary(model)
+#INPUT
+imdb_movies_direct2 <- read_csv("gen/temp/imdb_movies_direct2.csv")
+imdb_movies_mod2 <- read_csv("gen/temp/imdb_movies_mod2.csv")
+
+#TRANSFORMATION
+#Transform the data for the direct effect of total_runtime on average IMDB rating
+linearregression_directeffect <- lm(avg_rating ~ total_runtime, data = imdb_movies_direct2)
+summary(linearregression_directeffect)
+
+
+p <- ggplot(imdb_movies_direct2, aes(x = total_runtime, y = avg_rating)) +
+  geom_point(color = "#007BFF", alpha = 1, size = 0.5) +                
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  labs(
+    title = "The relationship between total runtime and average rating",
+    x = "Total runtime (minutes)",
+    y = "Average rating"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#3A0CA3"),
+    plot.subtitle = element_text(size = 13, color = "#7209B7"),
+    axis.title = element_text(face = "bold", color = "#264653"),
+    axis.text = element_text(color = "#333333"),
+    panel.grid.major = element_line(color = "#F1F1F1"),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "#FFF9F3", color = NA),
+    panel.background = element_rect(fill = "#FFF9F3", color = NA),
+    legend.position = "right",
+    legend.background = element_rect(fill = "#FFF9F3", color = NA)
+  )
+
+#Transformation of the moderating effect
+imdb_movies_mod2$most_common_genre <- factor(imdb_movies_mod2$most_common_genre)
+linear_model_moderatinginteraction <- lm(avg_rating ~ total_runtime * most_common_genre,
+                               data = imdb_movies_mod2)
+summary(linear_model_moderatinginteraction)
+
+pmod <- ggplot(imdb_movies_mod2, aes(x = total_runtime, y = avg_rating, color = most_common_genre)) +
+  geom_point(alpha = 0.6, size = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, linewidth = 1.2) +
+  facet_wrap(~most_common_genre) +
+  scale_color_manual(values = c("Action" = "#FF6B6B", "Drama" = "#1F77B4")) +
+  labs(
+    title = "Runtime & Genre on Average Rating, with an interaction effect",
+    x = "Total Runtime (minutes)",
+    y = "Average IMDb Rating",
+    color = "Genre"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#3A0CA3"),
+    plot.subtitle = element_text(size = 12, color = "#7209B7"),
+    axis.title = element_text(face = "bold", color = "#264653"),
+    axis.text = element_text(color = "#333333"),
+    panel.grid.major = element_line(color = "#F1F1F1"),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "#FFF9F3", color = NA),
+    panel.background = element_rect(fill = "#FFF9F3", color = NA),
+    legend.position = "right",
+    legend.background = element_rect(fill = "#FFF9F3", color = NA)
+  )
+print(pmod)
+
+#OUTPUT
+
+#Output for the direct effect
+summary(linearregression_directeffect)
+
+ggsave(
+  filename = "gen/temp/visual_directeffect.png",  
+  plot = p,                              
+  width = 7, height = 5, dpi = 300       
+)
+
+#Output for the moderating effect
+summary(linear_model_moderatinginteraction)
+
+ggsave(
+  filename = "gen/temp/visual_moderatingeffect.png",  
+  plot = pmod,                              
+  width = 10, height = 5, dpi = 300       
+)
 
 
 
-# Regression with the moderator: first regression model integration with the moderator
-data_mod$dominant_genre <- factor(data_mod$dominant_genre, levels = c("Drama", "Action"))
 
-lrmmod <- lm(avg_rating ~ total_runtime * dominant_genre, data = data_mod)
-summary(lrmmod)
 
-#Output results from the lrmmod
-lrmmodel_summary <- summary(lrmmod)
-coef_lrmmod <- as.data.frame(lrmmod_summary$coefficients)
-coef_lrmmod$Term <- ownames(coef_lrmmod)
-coef_lrmmod <- coef_lrmmode\[, c("Term", "Estimate", "Std. Error", "t value", "Pr(>|t|)")\]
-write.csv(coef_lrmmod,"analysis.csv", row.names = FALSE)
+
+
+
+
+
+
