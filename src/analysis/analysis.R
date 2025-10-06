@@ -6,6 +6,11 @@ lapply(packages, library, character.only = TRUE)
 
 setwd("../../")
 
+#Creating new folder
+if(!dir.exists("gen/output")){
+  dir.create("gen/output", recursive = TRUE)
+}
+
 #INPUT
 imdb_movies_direct <- read_csv("gen/temp/imdb_movies_direct.csv")
 imdb_movies_mod <- read_csv("gen/temp/imdb_movies_mod.csv")
