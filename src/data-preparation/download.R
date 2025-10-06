@@ -7,9 +7,12 @@ lapply(packages, library, character.only = TRUE)
 # Set working directory
 setwd("../../")
 
-# Creating folder
+# Creating folders
 if(!dir.exists("data/raw_data")){
   dir.create("data/raw_data", recursive = TRUE)
+}
+if(!dir.exists("gen/temp")){
+  dir.create("gen/temp", recursive = TRUE)
 }
 
 # INPUT:
@@ -39,7 +42,7 @@ title_basics <- readr::read_tsv("data/raw_data/title_basics.tsv.gz") %>%
 
 # OUTPUT:
 # Write output as csv 
-readr::write_csv(title_ratings,"data/raw_data/ratings.csv")
-readr::write_csv(title_crew,"data/raw_data/crew.csv")
-readr::write_csv(name_basics,"data/raw_data/name_basics.csv")
-readr::write_csv(title_basics,"data/raw_data/title_basics.csv")
+readr::write_csv(title_ratings,"gen/temp/ratings.csv")
+readr::write_csv(title_crew,"gen/temp/crew.csv")
+readr::write_csv(name_basics,"gen/temp/name_basics.csv")
+readr::write_csv(title_basics,"gen/temp/title_basics.csv")
