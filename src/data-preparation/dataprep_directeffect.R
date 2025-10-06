@@ -1,69 +1,38 @@
-library(dplyr)
-library(GGally)
-library(ggplot2)
-library(tidyr)
-library(stringr)
-library(purrr)
+#Setup
+install.packages(c("readr", "tidyverse", "dplyr"))
 
-# Merge stringr# Merge datasets
-df1 <- left_join(title_ratings, title_basics, by = "tconst")
-df_merged <- left_join(df1, title_crew, by = "tconst")
+packages <- c("readr", "tidyverse", "dplyr")
+lapply(packages, library, character.only = TRUE)
 
-# Splits directors in different columns
-df_split <- df_merged %>%
+getwd() #If working directory is not right, set your working directory to the root directory
+
+#Input
+imdb_movies
+imdb_movies <- read_csv("gen/temp/imdb_movies.csv")
+
+#Transformation
+
+runtime_bounds <- quantile(imdb_movies$runtimeMinutes, probs = c(0.05, 0.95), na.rm = TRUE)
+
+imdb_movies_direct <- imdb_movies %>%
+  filter(startYear >= 1990) %>%
+  filter(!is.na(runtimeMinutes)) %>%
+  filter(!is.na(averageRating)) %>%
+  filter(!is.na(directors)) %>%
+  filter(runtimeMinutes >= runtime_bounds[1], runtimeMinutes <= runtime_bounds[2])
+
+imdb_movies_direct <- imdb_movies_direct %>%
   separate_rows(directors, sep = ",")
 
-# Sets runtimeMinutes as numeric and changes "\\N" to NA
-df_split <- df_split %>%
-  mutate(runtimeMinutes = na_if(runtimeMinutes, "\\N"),
-         runtimeMinutes = as.numeric(runtimeMinutes))
-
-# Deletes unknown directors and genres and created column with primary genre
-df_clean <- df_split %>%
-  filter(directors != "\\N") %>%
-  filter(genres != "\\N")
-  
-# Splitting genres and calculating median for each genre 
-df_genres_long <- df_clean %>%
-  separate_rows(genres, sep = ",")
-
-genre_runtime_medians <- df_genres_long %>%
-  group_by(genres) %>%
-  summarise(median_runtime = median(runtimeMinutes, na.rm = TRUE))
-
-# Adding median runtimeMinutes for each genre and calculate the mean for runtimeMinutes for each movie
-df_genres_long <- df_genres_long %>%
-  left_join(genre_runtime_medians, by = "genres") %>%
-  group_by(tconst) %>%
-  mutate(mean_median_runtime = mean(median_runtime, na.rm = TRUE)) %>%
-  ungroup()
-
-# Changing back to one row per movie
-df_imputed <- df_genres_long %>%
-  group_by(tconst) %>%
-  slice(1) %>%
-  ungroup() %>%
-  left_join(
-    df_clean %>% select(tconst, genres),
-    by = "tconst",
-    suffix = c("", "_orig")
-  ) %>%
-  mutate(runtimeMinutes_imputed = if_else(
-    is.na(runtimeMinutes),
-    mean_median_runtime,
-    runtimeMinutes
-  ))
-
-#Calculating stats and group_by director
-director_stats <- df_imputed %>%
+imdb_movies_direct2 <- imdb_movies_direct %>%
   group_by(directors) %>%
   summarise(
-    avg_rating = mean(averageRating, na.rm = TRUE),
-    film_count = n(),
-    avg_runtime = mean(runtimeMinutes_imputed, na.rm = TRUE)
-  ) %>%
-  ungroup()
+    total_runtime = sum(runtimeMinutes, na.rm = TRUE),
+    avg_rating = mean(averageRating, na.rm = TRUE),     
+    n_films = n()                                      
+  ) 
 
-# Filter directors with small amount of films
-director_stats <- director_stats %>%
-  filter(film_count >= 3)
+
+#Output
+readr::write_csv(imdb_movies_direct2, "gen/temp/imdb_movies_direct2.csv")
+
