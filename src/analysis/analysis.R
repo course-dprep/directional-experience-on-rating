@@ -1,6 +1,4 @@
 #SETUP
-install.packages(c("readr", "tidyverse", "dplyr", "ggplot2"))
-
 packages <- c("readr", "tidyverse", "dplyr", "ggplot2")
 lapply(packages, library, character.only = TRUE)
 
@@ -89,21 +87,3 @@ ggsave(
   plot = pmod,                              
   width = 10, height = 5, dpi = 300       
 )
-
-
-
-
-
-
-
-#INPUT
-imdb_movies_direct <- read_csv("gen/temp/imdb_movies_direct.csv")
-imdb_movies_mod <- read_csv("gen/temp/imdb_movies_mod.csv")
-
-#TRANSFORMATION
-#Transform the data for the direct effect of total_runtime on average IMDB rating
-linearregression_directeffect <- lm(avg_rating ~ total_runtime, data = imdb_movies_direct)
-summary(linearregression_directeffect)
-
-
-
