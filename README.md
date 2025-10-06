@@ -59,7 +59,11 @@ Moreover, multiple regression provides a flexible framework to test whether the 
 
 ## Dependencies 
 
-*Explain any tools or packages that need to be installed to run this workflow.*
+library(dplyr)
+library(GGally)
+library(ggplot2)
+library(tidyr)
+library(tidyverse)
 
 ## Running Instructions 
 

@@ -4,24 +4,19 @@ install.packages(c("readr", "tidyverse", "dplyr", "ggplot2"))
 packages <- c("readr", "tidyverse", "dplyr", "ggplot2")
 lapply(packages, library, character.only = TRUE)
 
-setwd("../../")
-
-#Creating new folder
-if(!dir.exists("gen/output")){
-  dir.create("gen/output", recursive = TRUE)
-}
+getwd() #If working directory is not right, set your working directory to the root directory
 
 #INPUT
-imdb_movies_direct <- read_csv("gen/temp/imdb_movies_direct.csv")
-imdb_movies_mod <- read_csv("gen/temp/imdb_movies_mod.csv")
+imdb_movies_direct2 <- read_csv("gen/temp/imdb_movies_direct2.csv")
+imdb_movies_mod2 <- read_csv("gen/temp/imdb_movies_mod2.csv")
 
 #TRANSFORMATION
 #Transform the data for the direct effect of total_runtime on average IMDB rating
-linearregression_directeffect <- lm(avg_rating ~ total_runtime, data = imdb_movies_direct)
+linearregression_directeffect <- lm(avg_rating ~ total_runtime, data = imdb_movies_direct2)
 summary(linearregression_directeffect)
 
 
-p <- ggplot(imdb_movies_direct, aes(x = total_runtime, y = avg_rating)) +
+p <- ggplot(imdb_movies_direct2, aes(x = total_runtime, y = avg_rating)) +
   geom_point(color = "#007BFF", alpha = 1, size = 0.5) +                
   geom_smooth(method = "lm", color = "red", se = TRUE) +
   labs(
@@ -44,12 +39,12 @@ p <- ggplot(imdb_movies_direct, aes(x = total_runtime, y = avg_rating)) +
   )
 
 #Transformation of the moderating effect
-imdb_movies_mod$most_common_genre <- factor(imdb_movies_mod$most_common_genre)
+imdb_movies_mod2$most_common_genre <- factor(imdb_movies_mod2$most_common_genre)
 linear_model_moderatinginteraction <- lm(avg_rating ~ total_runtime * most_common_genre,
-                                         data = imdb_movies_mod)
+                               data = imdb_movies_mod2)
 summary(linear_model_moderatinginteraction)
 
-pmod <- ggplot(imdb_movies_mod, aes(x = total_runtime, y = avg_rating, color = most_common_genre)) +
+pmod <- ggplot(imdb_movies_mod2, aes(x = total_runtime, y = avg_rating, color = most_common_genre)) +
   geom_point(alpha = 0.6, size = 0.7) +
   geom_smooth(method = "lm", se = TRUE, linewidth = 1.2) +
   facet_wrap(~most_common_genre) +
@@ -81,7 +76,7 @@ print(pmod)
 summary(linearregression_directeffect)
 
 ggsave(
-  filename = "gen/output/visual_directeffect.png",  
+  filename = "gen/temp/visual_directeffect.png",  
   plot = p,                              
   width = 7, height = 5, dpi = 300       
 )
@@ -90,7 +85,25 @@ ggsave(
 summary(linear_model_moderatinginteraction)
 
 ggsave(
-  filename = "gen/output/visual_moderatingeffect.png",  
+  filename = "gen/temp/visual_moderatingeffect.png",  
   plot = pmod,                              
   width = 10, height = 5, dpi = 300       
 )
+
+
+
+
+
+
+
+#INPUT
+imdb_movies_direct <- read_csv("gen/temp/imdb_movies_direct.csv")
+imdb_movies_mod <- read_csv("gen/temp/imdb_movies_mod.csv")
+
+#TRANSFORMATION
+#Transform the data for the direct effect of total_runtime on average IMDB rating
+linearregression_directeffect <- lm(avg_rating ~ total_runtime, data = imdb_movies_direct)
+summary(linearregression_directeffect)
+
+
+
