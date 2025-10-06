@@ -1,3 +1,18 @@
+# Define directories
+OUTPUT = gen/output
+TEMP = gen/temp
+DATA = data
+SRC_ANALYSIS = src/analysis
+SRC_DATAPREP = src/data-preparation
+
+
+
+
+
+
+
+
+-----------------------------------------------------
 # Default target: run full analysis and visualization
 
 all: results/figures.pdf results/analysis_results.csv

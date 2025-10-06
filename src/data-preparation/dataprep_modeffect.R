@@ -1,39 +1,45 @@
-library(GGally)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
+#Setup
+install.packages(c("readr", "tidyverse", "dplyr"))
 
-# First step: linking: movies + directors to genres and runtime
-films <- title_basics %>%
-  select(tconst, genres, runtimeMinutes) %>%
-  inner_join(title_crew %>% select(tconst, directors), by = "tconst") %>%
-  mutate(runtimeMinutes = suppressWarnings(as.numeric(runtimeMinutes)))
+packages <- c("readr", "tidyverse", "dplyr")
+lapply(packages, library, character.only = TRUE)
 
-# Second step: replace missing runtime values for the average
-# Descision: we want to have as much movies in the dataset as possible
-# We do not want to remove any values, as this could affect the conclusion about the dominance between action and drama.
-mean_runtime <- mean(films$runtimeMinutes, na.rm = TRUE)
+getwd() #If working directory is not right, set your working directory to the root directory
 
-films <- films %>%
-  mutate(runtimeMinutes = ifelse(is.na(runtimeMinutes), mean_runtime, runtimeMinutes))
+#Input
+imdb_movies
+imdb_movies <- read_csv("gen/temp/imdb_movies.csv")
 
-# Third step: For the moderating effect, we only look at the effect of action vs drama genres
-films <- films %>%
-  filter(genres %in% c("Action", "Drama"))
+#Transformation
 
-# Fourth step: summate the runtime per genre per director and pivot wider
-director_genres <- films %>%
-  group_by(directors, genres) %>%
-  summarise(total_runtime_genre = sum(runtimeMinutes), .groups = "drop") %>%
-  tidyr::pivot_wider(
-    names_from = genres,
-    values_from = total_runtime_genre,
-    values_fill = 0
-  ) %>%
-  mutate(dominant_genre = ifelse(Action >= Drama, "Action", "Drama"))
+runtime_bounds <- quantile(imdb_movies$runtimeMinutes, probs = c(0.05, 0.95), na.rm = TRUE)
 
-# Fifth step, combine this dataset with director_stats
-data_mod <- director_stats %>%
-  inner_join(director_genres %>% select(directors, dominant_genre), by = "directors")
-#With an inner_join you only keep the records where both datasets overlap.
-#####################################################################
+imdb_movies_mod <- imdb_movies %>%
+  filter(startYear >= 1990) %>%
+  filter(!is.na(runtimeMinutes)) %>%
+  filter(!is.na(averageRating)) %>%
+  filter(!is.na(directors)) %>%
+  filter(runtimeMinutes >= runtime_bounds[1], runtimeMinutes <= runtime_bounds[2]) %>%
+  separate_rows(directors, sep = ",")
+
+imdb_movies_mod <- imdb_movies_mod %>%
+  separate_rows(genres, sep = ",") %>% #Set every genre at a new row
+  mutate(genres = trimws(genres)) %>%
+  filter(genres %in% c("Drama", "Action"))
+
+imdb_movies_mod2 <- imdb_movies_mod %>%
+  group_by(directors) %>%
+  summarise(
+    total_runtime = sum(runtimeMinutes, na.rm = TRUE),
+    avg_rating = mean(averageRating, na.rm = TRUE),
+    n_films = n(),
+    most_common_genre = names(sort(table(genres), decreasing = TRUE))[1],
+    .groups = "drop"
+  )
+
+#Is dit niet een vertekend beeld? Waarom, we kijken nu echt alleen naar de dingen die bekend zijn
+#voor action en drama, alleen deze films zijn hier nog bekend. Mogen we dit als geldig zien
+
+#Output
+readr::write_csv(imdb_movies_mod2, "gen/temp/imdb_movies_mod2.csv")
+
