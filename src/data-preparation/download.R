@@ -1,6 +1,5 @@
 # SETUP:
-# Installing and loading required packages
-install.packages(c("readr", "tidyverse"))
+# Loading required packages
 packages <- c("readr", "tidyverse")
 lapply(packages, library, character.only = TRUE)
 

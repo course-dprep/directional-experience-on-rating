@@ -1,6 +1,5 @@
 # SETUP:
-# Installing and loading required packages
-install.packages(c("readr", "tidyverse", "dplyr"))
+# Loading required packages
 
 packages <- c("readr", "tidyverse", "dplyr")
 lapply(packages, library, character.only = TRUE)
@@ -10,10 +9,10 @@ setwd("../../")
 
 # INPUT:
 # The following files are the input from download.r
-title_ratings 
-title_crew 
-name_basics 
-title_basics 
+title_ratings <- readr::read_csv("gen/temp/ratings.csv")
+title_crew <- readr::read_csv("gen/temp/crew.csv")
+name_basics <- readr::read_csv("gen/temp/name_basics.csv")
+title_basics <- readr::read_csv("gen/temp/title_basics.csv")
 
 # TRANSFORMATION:
 # Merge data in a single data file
