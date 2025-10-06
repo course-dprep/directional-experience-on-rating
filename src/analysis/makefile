@@ -1,5 +1,6 @@
+.PHONY: all clean
 
-#Step 1
-gen/output/visual_directeffect.png gen/output/visual_moderatingeffect.png: gen/temp/imdb_movies_direct.csv gen/temp/imdb_movies_mod.csv analysis.R
-	R --vanilla < analysis.R
+all: gen/temp/visual_directeffect.png gen/temp/visual_moderatingeffect.png
 
+gen/temp/visual_directeffect.png gen/temp/visual_moderatingeffect.png: ../../gen/temp/imdb_movies_direct.csv ../../gen/temp/imdb_movies_mod.csv analysis.R
+	Rscript --vanilla analysis.R
