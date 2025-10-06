@@ -1,20 +1,22 @@
 # Default target: runs everything up to the last file
-all: ../../gen/temp/imdb_movies.csv
+all: gen/temp/imdb_movies_direct.csv gen/temp/imdb_movies_mod.csv 
 
-#Step 1: Download data
-../../data/raw_data/title.ratings.tsv.gz ../../data/raw_data/title.crew.tsv.gz ../../data/raw_data/name.basics.tsv.gz ../../data/raw_data/title.basics.tsv.gz: ../../src/data-preparation/download.R
-	R -e "dir.create('../../data/raw_data', recursive = TRUE)"
-	Rscript ../../src/data-preparation/download.R
+# Step 1: Download data
+gen/temp/download_complete: download.R
+	R --vanilla < download.R
 
-#step 2: Clean and merge
-../../gen/temp/imdb_movies.csv: ../../data/raw_data/title.ratings.tsv.gz ../../data/raw_data/title.crew.tsv.gz ../../data/raw_data/name.basics.tsv.gz ../../data/raw_data/title.basics.tsv.gz ../../src/data-preparation/clean_and_merge.R
-	R -e "dir.create('../../gen/temp', recursive = TRUE)"
-	Rscript ../../src/data-preparation/clean_and_merge.R
+# Step 1a: CSV files stored in gen/temp/download_complete makes sure it only runs once
+gen/temp/ratings.csv gen/temp/crew.csv gen/temp/name_basics.csv gen/temp/title_basics.csv: gen/temp/download_complete
 
-# Step 3: Direct effect data prep
-gen/temp/dataprep_directeffect.csv: src/data-preparation/dataprep_directeffect.R gen/temp/clean_and_merge.csv
-	Rscript src/data-preparation/dataprep_directeffect.R
+# Step 2: Clean and merge
+gen/temp/imdb_movies.csv: gen/temp/ratings.csv gen/temp/crew.csv gen/temp/name_basics.csv gen/temp/title_basics.csv clean_and_merge.R
+	R --vanilla < clean_and_merge.R
 
-# Step 4: Moderate effect data prep
-gen/temp/dataprep_modeffect.csv: src/data-preparation/dataprep_modeffect.R gen/temp/dataprep_directeffect.csv
-	Rscript src/data-preparation/dataprep_modeffect.R
+#Step 3: Direct effect data prep
+gen/temp/imdb_movies_direct.csv: gen/temp/imdb_movies.csv dataprep_directeffect.R
+	R --vanilla < dataprep_directeffect.R
+
+#Step 4: Moderate effect data prep
+gen/temp/imdb_movies_mod.csv: gen/temp/imdb_movies.csv dataprep_modeffect.R
+	R --vanilla < dataprep_modeffect.R
+

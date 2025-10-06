@@ -4,7 +4,7 @@ install.packages(c("readr", "tidyverse", "dplyr"))
 
 packages <- c("readr", "tidyverse", "dplyr")
 lapply(packages, library, character.only = TRUE)
-getwd()
+
 # Set working directory
 setwd("../../")
 
@@ -82,7 +82,8 @@ imdb_movies <- imdb_movies %>%
     startYear = as.integer(startYear),
     runtimeMinutes = as.numeric(runtimeMinutes)
     )
-# OUTPUT
+
+# OUTPUT:
 # Save imdb_movies as .csv
 dir.create("gen")
 dir.create("gen/temp")

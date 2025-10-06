@@ -1,29 +1,5 @@
-# Define directories
-OUTPUT = gen/output
-TEMP = gen/temp
-DATA = data
-SRC_ANALYSIS = src/analysis
-SRC_DATAPREP = src/data-preparation
 
+#Step 1
+gen/output/visual_directeffect.png gen/output/visual_moderatingeffect.png: gen/temp/imdb_movies_direct.csv gen/temp/imdb_movies_mod.csv analysis.R
+	R --vanilla < analysis.R
 
-
-
-
-
-
-
------------------------------------------------------
-# Default target: run full analysis and visualization
-
-all: results/figures.pdf results/analysis_results.csv
-
-# Step 1: Run statistical analysis
-results/analysis_results.csv: analysis.R
-	$(MAKE) -C ../data-preparation ../data-preparation/processed_data/dataprep_modeffect.csv
-	mkdir -p results
-	Rscript analysis.R
-
-# Step 2: Generate visualizations
-results/figures.pdf: results/analysis_results.csv visualization.R
-	mkdir -p results
-	Rscript visualization.R
