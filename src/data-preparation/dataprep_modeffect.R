@@ -1,17 +1,17 @@
-#Setup
+# SETUP:
+# Installing and loading required packages
 install.packages(c("readr", "tidyverse", "dplyr"))
 
 packages <- c("readr", "tidyverse", "dplyr")
 lapply(packages, library, character.only = TRUE)
 
-getwd() #If working directory is not right, set your working directory to the root directory
+# Set working directory
+setwd("../../")
 
-#Input
-imdb_movies
+# INPUT:
 imdb_movies <- read_csv("gen/temp/imdb_movies.csv")
 
-#Transformation
-
+# TRANSFORMATION:
 runtime_bounds <- quantile(imdb_movies$runtimeMinutes, probs = c(0.05, 0.95), na.rm = TRUE)
 
 imdb_movies_mod <- imdb_movies %>%
@@ -27,7 +27,7 @@ imdb_movies_mod <- imdb_movies_mod %>%
   mutate(genres = trimws(genres)) %>%
   filter(genres %in% c("Drama", "Action"))
 
-imdb_movies_mod2 <- imdb_movies_mod %>%
+imdb_movies_mod <- imdb_movies_mod %>%
   group_by(directors) %>%
   summarise(
     total_runtime = sum(runtimeMinutes, na.rm = TRUE),
@@ -37,9 +37,5 @@ imdb_movies_mod2 <- imdb_movies_mod %>%
     .groups = "drop"
   )
 
-#Is dit niet een vertekend beeld? Waarom, we kijken nu echt alleen naar de dingen die bekend zijn
-#voor action en drama, alleen deze films zijn hier nog bekend. Mogen we dit als geldig zien
-
-#Output
-readr::write_csv(imdb_movies_mod2, "gen/temp/imdb_movies_mod2.csv")
-
+# OUTPUT:
+readr::write_csv(imdb_movies_mod, "gen/temp/imdb_movies_mod.csv")

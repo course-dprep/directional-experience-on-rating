@@ -4,7 +4,7 @@ install.packages(c("readr", "tidyverse", "dplyr"))
 
 packages <- c("readr", "tidyverse", "dplyr")
 lapply(packages, library, character.only = TRUE)
-getwd()
+
 # Set working directory
 setwd("../../")
 

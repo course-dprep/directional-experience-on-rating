@@ -1,17 +1,17 @@
-#Setup
+# SETUP:
+# Installing and loading required packages
 install.packages(c("readr", "tidyverse", "dplyr"))
 
 packages <- c("readr", "tidyverse", "dplyr")
 lapply(packages, library, character.only = TRUE)
 
-getwd() #If working directory is not right, set your working directory to the root directory
+# Set working directory
+setwd("../../")
 
-#Input
-imdb_movies
+# INPUT:
 imdb_movies <- read_csv("gen/temp/imdb_movies.csv")
 
-#Transformation
-
+# TRANSFORMATION:
 runtime_bounds <- quantile(imdb_movies$runtimeMinutes, probs = c(0.05, 0.95), na.rm = TRUE)
 
 imdb_movies_direct <- imdb_movies %>%
@@ -24,7 +24,7 @@ imdb_movies_direct <- imdb_movies %>%
 imdb_movies_direct <- imdb_movies_direct %>%
   separate_rows(directors, sep = ",")
 
-imdb_movies_direct2 <- imdb_movies_direct %>%
+imdb_movies_direct <- imdb_movies_direct %>%
   group_by(directors) %>%
   summarise(
     total_runtime = sum(runtimeMinutes, na.rm = TRUE),
@@ -32,7 +32,5 @@ imdb_movies_direct2 <- imdb_movies_direct %>%
     n_films = n()                                      
   ) 
 
-
-#Output
-readr::write_csv(imdb_movies_direct2, "gen/temp/imdb_movies_direct2.csv")
-
+# OUTPUT:
+readr::write_csv(imdb_movies_direct, "gen/temp/imdb_movies_direct.csv")
