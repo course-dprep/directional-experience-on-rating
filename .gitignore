@@ -5,4 +5,8 @@
 data/raw_data
 data/processed
 .Rhistory
-data/imdb_movies_dataset.csv
+data/imdb_movies.csv
+data/raw_data/ratings.csv
+data/raw_data/crew.csv
+data/raw_data/name_basics.csv
+data/raw_data/title_basics.csv
