@@ -14,6 +14,10 @@ if(!dir.exists("data/raw_data")){
 if(!dir.exists("gen/temp")){
   dir.create("gen/temp", recursive = TRUE)
 }
+if(!dir.exists("gen/temp/data_complete")){
+  dir.create("gen/temp/data_complete", recursive = TRUE)
+}
+
 
 # INPUT:
 # URLs for the IMDb datasets
