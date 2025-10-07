@@ -1,12 +1,16 @@
 # Use this file to keep certain files from being versioned (covered in the GitHub part of the course).
+#exlucing the Rhistory
+*.Rhistory
 
-.DS_Store
-.Rproj.user
-data/raw_data
-data/processed
-.Rhistory
-data/imdb_movies.csv
-data/raw_data/ratings.csv
-data/raw_data/crew.csv
-data/raw_data/name_basics.csv
-data/raw_data/title_basics.csv
+# excluding Rdata
+*.Rdata
+
+# excluding tsv
+*.tsv
+
+#excluding csv' s
+*.csv
+
+#Excluding plots
+*.png
+*.jpeg
