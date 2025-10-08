@@ -59,7 +59,7 @@ Overall we can see that the effect of director experience and ratings differ acr
 
 ## Repository Overview
 
-- data
+- data/
 
   - *imdb_movies_dataset.csv*
   
@@ -67,7 +67,7 @@ Overall we can see that the effect of director experience and ratings differ acr
   
     - *urls*
     
-- plots
+- plots/
 
   - conceptualmodel.jpeg
   
