@@ -139,7 +139,7 @@ To run this workflow, follow these steps:
 
 git clone <repository_URL>
 
-4.  Run the install.packages.R to make sure all packages are installed correclty 
+4.  Run the install.packages.R to make sure all packages are installed correctly 
 5.	Navigate into the project directory and execute:
 
 make
