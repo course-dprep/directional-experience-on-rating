@@ -39,6 +39,27 @@ The data was obtained from the IMDb database.And after the data-engineering we e
 1. imdb_movies_direct with 114685 observations 
 2. imdb_movies_mod with 60361 observations
 
+in this table you will find the columns and a small description of each.
+
+```{r, results='asis'}
+library(knitr)
+
+# Create your table data
+table_data <- data.frame(
+  Variable = c("directors", "total_runtime", "avg_rating", "n_films", "most_common_genre"),
+  Description = c(
+    "Key ID of the director",
+    "Total experience of the director in minutes",
+    "Average rating of the movies directed",
+    "Number of movies the director has directed",
+    "Predominant genre associated with the director"
+  )
+)
+
+# Print as Markdown table
+kable(table_data, format = "markdown")
+
+
 ## Method
 
 Multiple linear regression analysis
@@ -124,12 +145,16 @@ To run this workflow, follow these steps:
 1.	Fork this repository on GitHub.
 2.	Open your command-line interface (e.g., Git Bash, Terminal, or Git GUI).
 3.	Clone the repository to your local machine by running:
+
 git clone <repository_URL>
-4.	Navigate into the project directory and execute:
+
+4.  Run the install.packages.R to make sure all packages are installed correclty 
+5.	Navigate into the project directory and execute:
+
 make
+
 This command will run the entire workflow automatically.
-5.	Clean the directory (remove generated data/output files) by running:
-make clean
+
 
 
 ## Processing missing values
