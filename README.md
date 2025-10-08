@@ -51,56 +51,68 @@ In the preview you can find the visualization of this output.
 ![scatterpplot direct effect is unavailble](plots/Runtime_on_average_rating.jpg)
 ![scatterpplot moderating effect is unavailble](plots/Moderating_effect.jpg)
 The output of the project is visualized in these two scatterplots. With these two visualizations we can conclude the following:
+
 1.	The slope of the red trend-line is slightly negative, which indicates that there is a negative correlation between the total director experience and average rating. 
 2.	The result is also influenced by the moderating effect of genre (action vs drama). In action movies the slope is slightly positive, while in the drama genre the slope is slightly negative. This shows that the main effect is depended on the moderating effect of genre. 
+
 Overall we can see that the effect of director experience and ratings differ across the two genres. 
 
 ## Repository Overview 
-─ data/
-	-imdb_movies_dataset.csv
-	*-raw_data/*
-─ plots/
-	-conceptualmodel.jpeg
-	-Runtime_on_average_rating.jpg
-	-Moderating_effect.jpg
-	-missing_values_imdb_movies.jpeg
--reporting/
-	-rmarkdown_group10.Rmd
-	-report.Rmd
-	-start_app.R
-─ src/
-─ data-preparation/
-	-makefile
-	-Clean_and_merge.R
-	-dataprep_directeffect.R
-	-dataprep_modeffect.R
-	-download.R
-─ analysis/
-	-Analysis.R
-	-makefile
--makefile
-*-gen/* 
-	*-temp/*
-		*-imdb_movies.csv*
-		*-imdb_movies_direct.csv*
-		*-imdb_movies_mod.csv*
-	*-output/*
-		*-visual_directeffect.png*
-		*-visual_moderatingeffect.png*
-─ .gitignore
-─ .Rhistory
-─ makefile
-─ README.md
-─ team-project-team-10.Rproj
-*generated when running the workflow* 
+- data/
+    - imdb_movies_dataset.csv
+    *- raw_data/*
+       *- urls*
+- plots/
+    - conceptualmodel.jpeg
+    - Runtime_on_average_rating.jpg
+    - Moderating_effect.jpg
+    - missing_values_imdb_movies.jpeg
+- reporting/
+    - rmarkdown_group10.Rmd
+    - report.Rmd
+    - start_app.R
+- src/
+    - data-preparation/
+        - makefile
+        - Clean_and_merge.R
+        - dataprep_directeffect.R
+        - dataprep_modeffect.R
+        - download.R
+    - analysis/
+        - Analysis.R
+        - makefile
+- makefile
+*- gen/*
+    *- temp/*
+        *- ratings.csv*
+        *- crew.csv*
+        *- name_basics.csv*
+        *- title_basics.csv*
+        *- imdb_movies.csv*
+        *- imdb_movies_direct.csv*
+        *- imdb_movies_mod.csv*
+    *- output/*
+        *- visual_directeffect.png*
+        *- visual_moderatingeffect.png*
+- .gitignore
+- .Rhistory
+- makefile
+- README.md
+- team-project-team-10.Rproj
+
 
 ## Dependencies 
 
 library(dplyr)
+
 library(GGally)
+
 library(ggplot2)
+
 library(tidyr)
+
 library(tidyverse)
+
 
 ## Running Instructions 
 
