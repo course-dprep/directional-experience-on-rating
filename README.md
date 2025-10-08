@@ -5,7 +5,6 @@
 This study’s aim is to analyse whether a directors experience leads to higher IMDb ratings and whether this link depends on the type of movie (drama vs action). Directional experience will be measured as the cumulative number of minutes of movies directed in the past, rather than the number of movies. This choice reflects the fact that movies vary greatly in length. This measure accounts for both the quantity and scale of the director’s past work.  
 Besides analysing the main effect of director’s experience on movie ratings, this study also investigates this relationship with the moderating effect of action- and drama movies. 
 
-![Image on director experience is unavailable](plots/ggpairs1.png)
 
 ## Motivation
 
@@ -44,18 +43,56 @@ The data was obtained from the IMDb database.
 
 Multiple linear regression analysis
 
-To address our research question, multiple linear regression analysis is appropriate because it allows us to examine the relationship between a metric independent variable (directional experience) and a metric dependent variable (IMDb rating), while incorporating a non-metric moderator (movie genre: action vs. drama) through dummy coding. This approach enables estimation of both direct and interaction effects within a single model and allows inclusion of control variables, improving interpretability and reducing potential confounding.
+To address our research question, multiple linear regression analysis is appropriate because it allows us to examine the relationship between a metric independent variable (directional experience) and a metric dependent variable (IMDb rating), while incorporating a non-metric moderator (movie genre: action vs. drama). This approach enables estimation of both direct and interaction effects within a single model and allows inclusion of control variables, improving interpretability and reducing potential confounding.
 Moreover, multiple regression provides a flexible framework to test whether the effect of director experience differs across genres. By measuring effect sizes and accounting for multiple predictors at the same time, the method offers meaningful insights into how experience and genre jointly influence movie ratings.
- 
+In the preview you can find the visualization of this output.   
 
 ## Preview of Findings 
-- Describe the gist of your findings (save the details for the final paper!)
-- How are the findings/end product of the project deployed?
-- Explain the relevance of these findings/product. 
+![scatterpplot direct effect is unavailble](plots/Runtime_on_average_rating.jpg)
+![scatterpplot moderating effect is unavailble](plots/Moderating_effect.jpg)
+The output of the project is visualized in these two scatterplots. With these two visualizations we can conclude the following:
+1.	The slope of the red trend-line is slightly negative, which indicates that there is a negative correlation between the total director experience and average rating. 
+2.	The result is also influenced by the moderating effect of genre (action vs drama). In action movies the slope is slightly positive, while in the drama genre the slope is slightly negative. This shows that the main effect is depended on the moderating effect of genre. 
+Overall we can see that the effect of director experience and ratings differ across the two genres. 
 
 ## Repository Overview 
-
-**Include a tree diagram that illustrates the repository structure*
+─ data/
+	-imdb_movies_dataset.csv
+	*-raw_data/*
+─ plots/
+	-conceptualmodel.jpeg
+	-Runtime_on_average_rating.jpg
+	-Moderating_effect.jpg
+	-missing_values_imdb_movies.jpeg
+-reporting/
+	-rmarkdown_group10.Rmd
+	-report.Rmd
+	-start_app.R
+─ src/
+─ data-preparation/
+	-makefile
+	-Clean_and_merge.R
+	-dataprep_directeffect.R
+	-dataprep_modeffect.R
+	-download.R
+─ analysis/
+	-Analysis.R
+	-makefile
+-makefile
+*-gen/* 
+	*-temp/*
+		*-imdb_movies.csv*
+		*-imdb_movies_direct.csv*
+		*-imdb_movies_mod.csv*
+	*-output/*
+		*-visual_directeffect.png*
+		*-visual_moderatingeffect.png*
+─ .gitignore
+─ .Rhistory
+─ makefile
+─ README.md
+─ team-project-team-10.Rproj
+*generated when running the workflow* 
 
 ## Dependencies 
 
@@ -67,10 +104,20 @@ library(tidyverse)
 
 ## Running Instructions 
 
-*Provide step-by-step instructions that have to be followed to run this workflow.*
+To run this workflow, follow these steps:
+1.	Fork this repository on GitHub.
+2.	Open your command-line interface (e.g., Git Bash, Terminal, or Git GUI).
+3.	Clone the repository to your local machine by running:
+git clone <repository_URL>
+4.	Navigate into the project directory and execute:
+make
+This command will run the entire workflow automatically.
+5.	Clean the directory (remove generated data/output files) by running:
+make clean
+
 
 ## Processing missing values
-![Image on processing missing values in the dataset IMDb_movies](plots/Missing_values.png)
+![Image on processing missing values in the dataset IMDb_movies](plots/Missing_values_imdb_movies.jpg)
 
 ## Sources
 - Francemone, C. J., Kryston, K., & Grizzard, M. (2023). Examining genre success, co-occurrence, release, and production of 9,068 films over twenty years. Poetics, 99, 101794. https://doi.org/10.1016/j.poetic.2023.101794
