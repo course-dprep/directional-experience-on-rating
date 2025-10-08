@@ -41,10 +41,7 @@ The data was obtained from the IMDb database.And after the data-engineering we e
 
 in this table you will find the columns and a small description of each.
 
-```{r, results='asis'}
-library(knitr)
-
-# Create your table data
+```
 table_data <- data.frame(
   Variable = c("directors", "total_runtime", "avg_rating", "n_films", "most_common_genre"),
   Description = c(
@@ -53,11 +50,7 @@ table_data <- data.frame(
     "Average rating of the movies directed",
     "Number of movies the director has directed",
     "Predominant genre associated with the director"
-  )
-)
-
-# Print as Markdown table
-kable(table_data, format = "markdown")
+```
 
 
 ## Method
