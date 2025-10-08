@@ -58,49 +58,48 @@ The output of the project is visualized in these two scatterplots. With these tw
 Overall we can see that the effect of director experience and ratings differ across the two genres. 
 
 ## Repository Overview 
-- data/
-    - imdb_movies_dataset.csv
-    *- raw_data/*
-       *- urls*
-- plots/
-    - conceptualmodel.jpeg
-    - Runtime_on_average_rating.jpg
-    - Moderating_effect.jpg
-    - missing_values_imdb_movies.jpeg
-- reporting/
-    - rmarkdown_group10.Rmd
-    - report.Rmd
-    - start_app.R
-- src/
-    - data-preparation/
-        - makefile
-        - Clean_and_merge.R
-        - dataprep_directeffect.R
-        - dataprep_modeffect.R
-        - download.R
-    - analysis/
-        - Analysis.R
-        - makefile
-- makefile
-*- gen/*
-    *- temp/*
-        *- ratings.csv*
-        *- crew.csv*
-        *- name_basics.csv*
-        *- title_basics.csv*
-        *- imdb_movies.csv*
-        *- imdb_movies_direct.csv*
-        *- imdb_movies_mod.csv*
-    *- output/*
-        *- visual_directeffect.png*
-        *- visual_moderatingeffect.png*
-- .gitignore
-- .Rhistory
-- makefile
-- README.md
-- team-project-team-10.Rproj
-
-
+├── data/
+│   ├── *imdb_movies_dataset.csv*
+│   └── *raw_data/*
+│       └── *urls*
+├── plots/
+│   ├── conceptualmodel.jpeg
+│   ├── Runtime_on_average_rating.jpg
+│   ├── Moderating_effect.jpg
+│   └── missing_values_imdb_movies.jpeg
+├── reporting/
+│   ├── rmarkdown_group10.Rmd
+│   ├── report.Rmd
+│   └── start_app.R
+├── src/
+│   ├── data-preparation/
+│   │   ├── makefile
+│   │   ├── Clean_and_merge.R
+│   │   ├── dataprep_directeffect.R
+│   │   ├── dataprep_modeffect.R
+│   │   └── download.R
+│   └── analysis/
+│       ├── Analysis.R
+│       └── makefile
+├── makefile
+├── *gen/*
+│   ├── *temp/*
+│   │   ├── *ratings.csv*
+│   │   ├── *crew.csv*
+│   │   ├── *name_basics.csv*
+│   │   ├── *title_basics.csv*
+│   │   ├── *imdb_movies.csv*
+│   │   ├── *imdb_movies_direct.csv*
+│   │   └── *imdb_movies_mod.csv*
+│   └── *output/*
+│       ├── *visual_directeffect.png*
+│       └── *visual_moderatingeffect.png*
+├── .gitignore
+├── .Rhistory
+├── makefile
+├── README.md
+└── team-project-team-10.Rproj
+*are generated when running the workflow*
 ## Dependencies 
 
 library(dplyr)
