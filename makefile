@@ -7,5 +7,5 @@ analysis: data-preparation
 	make -C src/analysis
 	
 clean:
-    R -e "unlink('temp', recursive = TRUE)"
+    R -e "unlink('gen', recursive = TRUE)"
     R -e "unlink('data', recursive = TRUE)"
