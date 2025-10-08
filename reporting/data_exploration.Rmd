@@ -1,0 +1,185 @@
+---
+title: "Data Exploration"
+output: pdf_document
+date: "2025-10-08"
+---
+
+## Introduction
+
+This report provides a short exploratory data analysis of the IMDb movie dataset.  
+The purpose is to better understand the structure of the data, identify key variables, check for missing values, and visualize general patterns such as rating distributions and trends over time.
+
+---
+
+## Loading the Data
+
+The first step is to load the required R packages and import the dataset.  
+Make sure the file path to your dataset is correct before running the code.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+
+setwd("../")
+imdb <- read_csv("gen/temp/imdb_movies.csv")
+head(imdb)
+```
+## Dataset Overview
+
+Before analyzing the data, we first check how many observations (rows) and variables (columns) the dataset contains.
+Then, we create a summary table showing the variable names, data types, missing values, example entries, and short descriptions.
+```{r}
+descriptions <- c(
+  "Movie ID",
+  "Year of release",
+  "Duration of the movie in minutes",
+  "Average IMDb rating",
+  "Number of votes",
+  "Genre of the movie",
+  "Director of the movie"
+)
+
+summary_df <- data.frame(
+  Variable = names(imdb),
+  Type = sapply(imdb, class),
+  Missing_Data = sapply(imdb, function(x) sum(is.na(x))),
+  Example = sapply(imdb, function(x) paste(head(x, 1), collapse = ", ")),
+  Description = descriptions[1:length(names(imdb))],
+  row.names = NULL
+)
+
+summary_df %>%
+  kable(caption = "Overview of Variables in IMDb Dataset") %>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+## Dimensions of the Dataset
+```{r}
+variable_1 <- nrow(imdb)
+variable_2 <- ncol(imdb)
+
+```
+We have 'r variable_1' observations and we have 'r variable_2' columns.
+
+## Summary Statistics
+
+Here we calculate basic descriptive statistics, including the minimum, quartiles, median, mean, maximum, and number of missing values, for selected numeric variables.
+```{r}
+summary_table <- imdb %>%
+  summarise(across(
+    c(runtimeMinutes, startYear, averageRating, numVotes),
+    list(
+      Min = ~min(.x, na.rm = TRUE),
+      `1st Qu.` = ~quantile(.x, 0.25, na.rm = TRUE),
+      Median = ~median(.x, na.rm = TRUE),
+      Mean = ~mean(.x, na.rm = TRUE),
+      `3rd Qu.` = ~quantile(.x, 0.75, na.rm = TRUE),
+      Max = ~max(.x, na.rm = TRUE),
+      Missing = ~sum(is.na(.x))
+    ),
+    .names = "{.col}_{.fn}"
+  )) %>%
+  tidyr::pivot_longer(everything(),
+                      names_to = c("Variable", ".value"),
+                      names_sep = "_")
+
+knitr::kable(summary_table, caption = "Summary Statistics for IMDB Variables", digits = 1) %>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+## Visualizations
+
+In this section, we visualize the main characteristics of the IMDb dataset.
+We focus on the distribution of ratings, trends over time, and relationships between variables.
+```{r}
+imdb_complete <- imdb %>%
+  filter(!is.na(averageRating), !is.na(startYear),
+         !is.na(runtimeMinutes), !is.na(numVotes))
+```
+
+### Distribution of Average Movie Ratings
+
+This histogram shows how movie ratings are distributed across the dataset.
+```{r}
+ggplot(imdb_complete, aes(x = averageRating)) +
+  geom_histogram(bins = 10, fill = "#F5C518", color = "black") +
+  labs(
+    title = "Distribution of Average Movie Ratings",
+    x = "Average Rating",
+    y = "Number of Movies"
+  ) +
+  scale_x_continuous(breaks = seq(from = min(imdb_complete$averageRating, na.rm = TRUE),
+                                 to = max(imdb_complete$averageRating, na.rm = TRUE),
+                                 by = 1)) +
+  theme_minimal()
+```
+### Average Rating by Year
+
+The following line chart shows how the average rating has evolved over time.
+This can reveal general trends or shifts in audience perception.
+```{r}
+# Bereken gemiddelde rating per jaar
+imdb_yearly <- imdb_complete %>%
+  group_by(startYear) %>%
+  summarise(mean_rating = mean(averageRating, na.rm = TRUE))
+
+ggplot(imdb_yearly, aes(x = startYear, y = mean_rating)) +
+  geom_line(color = "#F5C518") +
+  labs(
+    title = "Average Movie Rating by Year",
+    x = "Release Year",
+    y = "Average Rating"
+  ) +
+  scale_x_continuous(breaks = seq(from = min(imdb_yearly$startYear, na.rm = TRUE),
+                                 to = max(imdb_yearly$startYear, na.rm = TRUE),
+                                 by = 10)) +
+  theme_minimal()
+```
+### Relationship Between Number of Votes and Ratings
+
+Here we visualize the relationship between the number of user votes and the average rating.
+Highly popular movies (many votes) might show different rating behavior compared to less-known films.
+```{r}
+# Relatie voor aantal stemmen en rating
+ggplot(imdb_complete, aes(x = numVotes, y = averageRating)) +
+  geom_point(alpha = 0.2, color = "#F5C518") +
+  labs(
+    title = "Relationship between Number of Votes and Average Rating",
+    x = "Number of Votes",
+    y = "Average Rating"
+  ) +
+theme_minimal()
+```
+### Distribution of Movie Runtimes
+
+This histogram focuses on typical movie lengths (0–300 minutes), giving insight into runtime trends.
+```{r}
+# Filter complete cases en focus op normale speelduur (0-300 min)
+imdb_runtime <- imdb_complete %>%
+  filter(runtimeMinutes > 0, runtimeMinutes <= 300)
+
+# Histogram van filmlengtes
+ggplot(imdb_runtime, aes(x = runtimeMinutes)) +
+  geom_histogram(bins = 30, fill = "#F5C518", color = "black") +
+  labs(
+    title = "Distribution of Movie Runtimes (0-300 minutes)",
+    x = "Runtime (minutes)",
+    y = "Number of Movies"
+  ) +
+  theme_minimal()
+```
+
+## Conclusion
+
+From this exploratory analysis, we can conclude the following:
+
+- The IMDb dataset contains information on several thousand movies, covering multiple attributes such as ratings, release year, runtime, and popularity.
+- Most movies have ratings clustered around a central value (often between 6 and 7).
+- Average ratings appear relatively stable across years, though minor trends may exist.
+- Movies with more votes tend to be those that are more popular or widely known.
+- Typical movie runtimes lie between 80 and 130 minutes, with only a few outliers.
+
+This dataset provides a valuable foundation for further analysis, such as predicting movie success, exploring genre effects, or studying temporal changes in audience preferences.
