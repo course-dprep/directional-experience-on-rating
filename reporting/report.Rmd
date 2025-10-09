@@ -1,7 +1,7 @@
 ---
-title: "document_project_data_preparation_group10_PDFmarkup."
+title: "document_project_data_preparation_group10_PDFmarkup"
 author: "Group 10"
-date: "2025-09-04"
+date: "2025-10-10"
 output:
 word_document: default
 pdf_document: default
@@ -11,16 +11,15 @@ Luc Vesters				        snr:2145531
 Seppe Bogers				      snr:2080522
 Melvin Hong				        snr:2146253
 Wouter van der Linden			snr:2116790
-Marvin  Herwig			    	snr:2138521
+Marvin Herwig			      	snr:2138521
 
 
 ```{r analysis_packages, echo = FALSE, message=FALSE, warning=FALSE}
-#Loading packages
+# Loading packages
 library(dplyr)
 library(GGally)
 library(ggplot2)
 library(tidyr)
-library()
 ```
 
 # Does directional experience influence IMDb ratings? 
@@ -30,42 +29,36 @@ library()
 
 #### Research Question
 
-To what extent does a director’s experience( measured as the cumulative number of minutes of all movies previously directed) predict a movie’s IMDb rating, and is this relationship moderated by movie genre (drama vs. action)?
+To what extent does a director’s experience (measured as the cumulative number of minutes of all movies previously directed) predict a movie’s IMDb rating, and is this relationship moderated by movie genre (drama vs. action)?
 
-#### Academically Relevant
+#### Academical Relevance
+This study contributes to research on the movie industry by examining how directors’ cumulative experience predicts movie evaluations. IMDb ratings capture consumer evaluation patterns. Prior research has shown that a director’s experience also influences movie outcomes. Directors with more experience are more likely to produce movies that achieve higher ratings (John et al., 2014). Furthermore, genre could play a crucial role. Francemone et al. (2023) examined 9,068 movies over twenty years and found that action movies tend to be more popular, resulting in higher box office numbers and more IMDb reviews than drama movies. However, drama movies are strongly associated with critical acclaim and receive higher ratings (Francemone et al., 2023). This evidence highlights the importance of considering genre when analysing how directorial experience relates to movie ratings.
 
-This study contributes to research on the movie industry by examining how directors’ cumulative experience predicts movie evaluations. We use total directed minutes, which captures experience more precisely. Then the length of the movies give less experience when it’s rather short than a few very long ones. The IMDb ratings capture consumer evaluation patterns. Furthermore, genre could play a crucial role, given that the genre drama is more critically evaluated than the genre action, which is more popular. This suggests genre could moderate this relationship.
-
-#### Managerially Relevant
-
-For studios and investors facing uncertainty, insights into how directors experience influences audience rating are useful. If experience predicts higher quality, the decision for an experienced director could be made easier. Recognizing genre differences helps managers allocate talent effectively. While technical production could dominate the genre drama. This reduces risk and aligns creative choices with market demands.
+#### Managerial Relevance
+For studios and investors, insights into how directors’ experience influences audience evaluations have clear practical value. If director experience correlates with IMDb ratings, hiring decisions become easier. Experience may serve as a signal of quality and predictability of outcomes. Moreover, it is essential to consider differences between genres. Dramas typically rely more on director-driven elements (Francemone et al., 2023). In this context, directorial experience is more likely to enhance quality and reduce both artistic and commercial risk. Action movies, by contrast, often depend more heavily on technical production capacities. Here, managers may mitigate risk more effectively by investing in technical teams rather than relying solely on director experience. For decision-makers, this implies a differentiated allocation of talent and budget.
 
 #### Statistical Testing Method
-
-Multiple regression analysis is suitable for testing a metric independent variable(director experience) and a metric independent variable(IMDb rating), while including a nonmetric moderator (genre: drama vs. action). By applying this method, this estimates the direct and indirect effect in a single model. It also allows controlling for other factors, making the results more interpretable.
-
-
+Multiple regression analysis is suitable for testing a metric independent variable (director experience) and a metric dependent variable (IMDb rating), while including a non-metric moderator (genre: drama vs. action). This method estimates the direct and indirect effects within a single model. It also allows for the inclusion of control variables, making the results more interpretable.
 
 ### Creating  the raw data set
 
-#### packages and folders
-The packages that this projects needs to run are listed in the installpackages.R document in the rootdirectory of this project. The download.R document makes also sure that right working directorys will be set and that the folders and subfolders are created and put in the right place.
+#### Packages and folders
+The packages required for this project are listed in the installpackages.R script in the root directory of this project. The download.R script ensures that the correct working directories are set and that folders and subfolders are created and placed in the appropriate locations.
 
+#### Datasets that will be used in this project
+This project uses datasets from IMDb. The following IMDb datasets are used:
+- name.basics.tsv
+- title.basics.tsv
+- title.crew.tsv
+- title.ratings.tsv
 
-#### datasets that will be used in this project
+#### Adjustments to create the raw dataset
+The title.basics.tsv file is filtered immediately after download. This dataset contains a variable called primaryTitle, which describes the type of video material. Only entries where primaryTitle equals "movie" are retained, as TV series, shorts, and other formats should not be included in this analysis. Only columns relevant to our research question (tconst, runtimeMinutes, genres, startYear) were kept due to the large file size.
 
-This project uses datasets from IMDB movies. The following datasets from IMDB movies are used in this project:
--name.basics.tsv
--title.basics.tsv
--title.crew.tsv
--title.ratings.tsv
+After filtering title.basics.tsv, the name.basics.tsv, title.crew.tsv, title.ratings.tsv, and the filtered version of title.basics.tsv were saved as .csv files. These were read into RStudio and merged using a full join to retain the maximum amount of data. The merged dataset was then saved as imdb_movies.csv. (The process of merging and saving is detailed in the clean_and_merge.R script.)
 
-#### adjustments to create the raw dataset
-
-The title.basics.tsv file will be filtered immediately after it has been downloaded. This is because the dataset contains a variable called "primaryTitle" and it describes the type of the video material. That is the reason why "movie" is filtered from the primaryTitle variable, because tv series, shorts and other types of video material should not be included in this analysis. Only the columns that were relevant for our research question (tconst, runtimeMinutes, genres, startYear) were taken from the title.basics.tsv. This because of the size of the title.basics.tsv file. After filtering the title.basics.tsv dataset, the "name.basics.tsv", the "title.crew.tsv", the "title.ratings.tsv" and the filtered version of "title.basics.tsv" were saved as ".csv" files/datasets. These files/datasets are merged using a full join because the maximum amount of data well be retained this way. Finally, this big merged datset will be saved as "imdb_movies_dataset". (The way of merging and saving the imdb_movies_dataset is shown in the clean_and_merge.R rscript)     
-`
-#### operationalisation tabels 
-Operationalisation tables are made to provide more information about the variables that are included in the dataset. The operationalisation tables are called: name_basics_cols, title_crew_cols, title_basics_cols and title_ratings_cols( these tables are shown below). 
+#### Operationalisation tabels 
+Operationalisation tables provide more information about the variables included in the dataset. The tables are named name_basics_cols, title_crew_cols, title_basics_cols, and title_ratings_cols (shown below).
 
 ```{r preparing_data, include=TRUE}
 
@@ -115,30 +108,25 @@ title_ratings_cols <- tibble(
     "number of votes the title has received"
   )
 )
-
-
 ```
 
-#### handling missing values and class problems
+#### Handling missing values and class problems
+Missing values in imdb_movies were indicated as "\\N". These were replaced with NA to facilitate functions such as rm.na and is.na, which make analysis easier. The class of runtimeMinutes was changed to integer, and startYear to numeric, as both were originally classified as characters. These changes allow for statistical computations and proper comparisons. The cleaned dataset was saved as a new CSV file named imdb_movies.csv.
 
-The missing values in the "imdb_movies_dataset" were indicated with the as "\\N". the code used indicated the missing values with NA. This because  functions like "rm.na" or "is.na"  were easier to work with and it makes analysis easier. Finally the class of runtimeMinutes changed into an integer and the class of startYear changed to numeric. Both these variables were classified as characters. by changing them, stats could be performed and proper comparisions could be performed as well. These changes were saved in a new csv file called: "imdb_movies.csv" 
-
-### cleaning data for the direct effect
-From the "imdb_movies.csv" dataset, the 5% extreme values in the dataset will be ignored. This because the results are not normally divided in the when we do not ignore the 5% extreme values. The dataset contains some extreme points with a totalruntime over the 15000 minutes. Normality is needed when we want to run a muliple linear regression. That is the reason why the 5% extreme values will be ignored. This project only uses films that are created from 1990 onwards. The digital revolution started in 1990 and changed the film industry as well. New digital visual effects could be used in films because of this revolution. The observations are also filtered in a way that the na's are ignored as well. A seperate row function makes sure that every director has its own row, because there are observations that included multiple directors. Finally, three columns are added to the dataset. The column "total_runtime" which is the sum of the runtime in minutes. This way we were able to get the total_runtime of film that a director produced in its career. The second column is "avg_rating" which is the mean of the average_rating of all films that the director created. The last column is n_films column which counts the amount of films that a director has made. All these adjustements are saved in a .csv file called "imdb_movies_direct.csv". (All the steps mentioned in this paragraph are shown in the dataprep_directeffect.R rscript.)
-
+### Cleaning data for the direct effect
+From the “imdb_movies.csv” file, the 5% most extreme values in the dataset will be excluded. This is because the results are not normally distributed when we do not exclude the 5% most extreme values. The dataset contains some extreme points with a total runtime over 15,000 minutes. Normality is needed when we want to run a multiple linear regression. That is the reason why the 5% extreme values will be excluded. This project only uses films that were released from 1990 onwards. The digital revolution started in 1990 and changed the film industry as well. New digital visual effects could be used in films because of this revolution. The observations are also filtered so that the NAs are ignored as well. A separate row function ensures that every director has their own row, because there are observations that include multiple directors. Finally, three columns are added to the dataset. The column “total_runtime” represents the sum of the runtime in minutes. This way we were able to get the total_runtime of films that a director produced over their career. The second column is “avg_rating,” which is the mean of the average_rating of all films that the director created. The last column is the “n_films” column, which counts the number of films that a director has made. All these adjustments are saved in a .csv file called “imdb_movies_direct.csv”. (All the steps mentioned in this paragraph are shown in the dataprep_directeffect.R R script.)
 
 #hier mogelijk nog een plot plaatsen van de normale verdeling
 
-### cleaning the data for the moderate effect
-The "imdb_movies.csv" dataset will be used for the moderate effect as well. The data cleaning of the moderate effect is very similar to the data cleaning of the direct effect. For example, the 5% extreme values will similarly be ignored as in the direct effect to fufil the normality assumption. Na's will also be similarly removed and start_year is filtered from 1990 onwards. The moderate dataset makes sure that every genre has it own row. This is managed through the seperate row function that is used. Genres are also filtered by "Drama" and "Action" because these are the genres that we focus on in our research. Finally, four columns are added in the moderate effect dataset: total_runtime, avg_rating, n_films and most_common_genre. The first three columns are created in the same way as in the direct effect dataset. The most_common_genre column and it provides the most common genres. All adjustments will be saved as csv file called "imdb_movies_mod.csv". (All the steps mentioned in this paragraph are shown in the dataprep_modeeffect.R rscript.)
+### Cleaning the data for the moderate effect
+The “imdb_movies.csv” dataset will be used for the moderate effect as well. The data cleaning of the moderate effect is very similar to the data cleaning of the direct effect. For example, the 5% most extreme values will similarly be excluded, as in the direct effect, to fulfil the normality assumption. NAs will also be similarly removed, and start_year will be filtered from 1990 onwards. The moderate dataset ensures that every genre has its own row. This is managed through the separate row function that is used. Genres are also filtered by “Drama” and “Action” because these are the genres that we focus on in our research. Finally, four columns are added to the moderate effect dataset: total_runtime, avg_rating, n_films, and most_common_genre. The first three columns are created in the same way as in the direct effect dataset. The most_common_genre column provides the most common genre. All adjustments will be saved as a CSV file called “imdb_movies_mod.csv”. (All the steps mentioned in this paragraph are shown in the dataprep_modeeffect.R R script.)
 
 ### Analysing the direct effect and the moderate effect
-
 
 # WE CREATED ANALYSIS AND VISUALIZATIONS BY USING THE FOLLOWING PACKAGES: DPLYR, GGALLY, GGPLOT2, TIDYR
 
 ```{r analysis_packagesecho = FALSE, message=FALSE, warning=FALSE}
-#Loading packages
+# Loading packages
 library(dplyr)
 library(GGally)
 library(ggplot2)
@@ -146,7 +134,7 @@ library(tidyr)
 library()
 ```
 
-#WE CREATED SOME MULTIPLE LINEAR REGRESSIONS, WHICH YOU CAN SEE IN THIS ANALYSIS
+# WE CREATED SOME MULTIPLE LINEAR REGRESSIONS, WHICH YOU CAN SEE IN THIS ANALYSIS
 
 ```{r regression_analysis}
 # input from the dataprep_directeffect and dataprep_modeffect
@@ -156,7 +144,7 @@ readr::write_csv(data_mod, "modeffect_data.csv")
 # Creating a new variable for director_stats
 director_stats$total_runtime <- director_stats$avg_runtime * director_stats$film_count
 
-# Regressionmodel
+# Regression model
 model <- lm(avg_rating ~ total_runtime, data = director_stats)
 summary(model)
 
@@ -168,16 +156,16 @@ data_mod$dominant_genre <- factor(data_mod$dominant_genre, levels = c("Drama", "
 lrmmod <- lm(avg_rating ~ total_runtime * dominant_genre, data = data_mod)
 summary(lrmmod)
 
-#Output results from the lrmmod
+# Output results from the lrmmod
 lrmmodel_summary <- summary(lrmmod)
 coef_lrmmod <- as.data.frame(lrmmod_summary$coefficients)
 coef_lrmmod$Term <- ownames(coef_lrmmod)
 coef_lrmmod <- coef_lrmmode\[, c("Term", "Estimate", "Std. Error", "t value", "Pr(>|t|)")\]
 write.csv(coef_lrmmod,"analysis.csv", row.names = FALSE)
 ```
-#CREATE THE CONCLUSION WE CAN DRAW FROM THIS ANALYSIS
+# CREATE THE CONCLUSION WE CAN DRAW FROM THIS ANALYSIS
 
-#BELOW WE CREATED SOME VISUALIZATIONS TO LET YOU SEE OUR REGRESSION MODEL
+# BELOW WE CREATED SOME VISUALIZATIONS TO LET YOU SEE OUR REGRESSION MODEL
 
 ```{r visualization_analysis}
 # ggpairs plot
@@ -201,5 +189,4 @@ ggplot(director_stats %>% dplyr::filter(total_runtime <= 20000),
   theme_minimal()
 ```
 
-
-#SHOW A CONCLUSION
+# SHOW A CONCLUSION
