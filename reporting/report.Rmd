@@ -70,8 +70,8 @@ Operationalisation tables are made to provide more information about the variabl
 
 ```{r preparing_data, include=TRUE}
 library(tibble)
-library(knitr)   # voor kable
-library(gt)      # optioneel, voor mooiere tabellen
+library(knitr)   
+library(gt)      
 
 # Column descriptions ----
 
