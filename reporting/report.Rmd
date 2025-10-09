@@ -1,2 +1,212 @@
-# You can use this file (or similar ones) to work on a report. 
-# Of course, you need to replace them with actual RMarkdown files eventually.
+---
+title: "document_project_data_preparation_group10_PDFmarkup"
+author: "Group 10"
+date: "2025-10-09"
+output: pdf_document
+---
+
+Daan Bankers              snr:2100281
+Luc Vesters				        snr:2145531
+Seppe Bogers				      snr:2080522
+Melvin Hong				        snr:2146253
+Wouter van der Linden			snr:2116790
+Marvin  Herwig			    	snr:2138521
+
+
+```{r analysis_packages, echo = FALSE, message=FALSE, warning=FALSE}
+#Loading packages
+library(dplyr)
+library(GGally)
+library(ggplot2)
+library(tidyr)
+library(kableExtra)
+setwd("../")
+```
+
+# Does directional experience influence IMDb ratings? 
+## Examining how director experience predicts IMDb ratings and how this relationship differs between drama and action movies.
+
+### Introduction
+
+#### Research Question
+
+To what extent does a director’s experience( measured as the cumulative number of minutes of all movies previously directed) predict a movie’s IMDb rating, and is this relationship moderated by movie genre (drama vs. action)?
+
+#### Academically Relevant
+
+This study contributes to research on the movie industry by examining how directors’ cumulative experience predicts movie evaluations. We use total directed minutes, which captures experience more precisely. Then the length of the movies give less experience when it’s rather short than a few very long ones. The IMDb ratings capture consumer evaluation patterns. Furthermore, genre could play a crucial role, given that the genre drama is more critically evaluated than the genre action, which is more popular. This suggests genre could moderate this relationship.
+
+#### Managerially Relevant
+
+For studios and investors facing uncertainty, insights into how directors experience influences audience rating are useful. If experience predicts higher quality, the decision for an experienced director could be made easier. Recognizing genre differences helps managers allocate talent effectively. While technical production could dominate the genre drama. This reduces risk and aligns creative choices with market demands.
+
+#### Statistical Testing Method
+
+Multiple regression analysis is suitable for testing a metric independent variable(director experience) and a metric independent variable(IMDb rating), while including a nonmetric moderator (genre: drama vs. action). By applying this method, this estimates the direct and indirect effect in a single model. It also allows controlling for other factors, making the results more interpretable.
+
+
+
+### Creating the raw data set
+
+#### packages and folders
+The packages that this projects needs to run are listed in the installpackages.R document in the rootdirectory of this project. The download.R document makes also sure that right working directorys will be set and that the folders and subfolders are created and put in the right place.
+
+
+#### datasets that will be used in this project
+
+This project uses datasets from IMDB movies. The following datasets from IMDB movies are used in this project:
+-name.basics.tsv
+-title.basics.tsv
+-title.crew.tsv
+-title.ratings.tsv
+
+#### adjustments to create the raw dataset
+
+The title.basics.tsv file will be filtered immediately after it has been downloaded. This is because the dataset contains a variable called "primaryTitle" and it describes the type of the video material. That is the reason why "movie" is filtered from the primaryTitle variable, because tv series, shorts and other types of video material should not be included in this analysis. Only the columns that were relevant for our research question (tconst, runtimeMinutes, genres, startYear) were taken from the title.basics.tsv. This because of the size of the title.basics.tsv file. After filtering the title.basics.tsv dataset, the "name.basics.tsv", the "title.crew.tsv", the "title.ratings.tsv" and the filtered version of "title.basics.tsv" were saved as ".csv" files/datasets. These files/datasets are merged using a full join because the maximum amount of data well be retained this way. Finally, this big merged datset will be saved as "imdb_movies_dataset". (The way of merging and saving the imdb_movies_dataset is shown in the clean_and_merge.R rscript)     
+`
+#### operationalisation tabels 
+Operationalisation tables are made to provide more information about the variables that are included in the dataset. The operationalisation tables are called: name_basics_cols, title_crew_cols, title_basics_cols and title_ratings_cols( these tables are shown below). 
+
+
+```{r preparing_data, include=TRUE}
+library(tibble)
+library(knitr)   
+library(gt)      
+
+# Column descriptions --
+
+name_basics_cols <- tibble(
+  column = c("nconst", "primaryName", "birthYear", "deathYear", "primaryProfession", "knownForTitles"),
+  description = c(
+    "alphanumeric unique identifier of the name/person",
+    "name by which the person is most often credited",
+    "in YYYY format",
+    "in YYYY format if applicable, else '\\N'",
+    "the top-3 professions of the person",
+    "titles the person is known for"
+  )
+)
+
+title_crew_cols <- tibble(
+  column = c("tconst", "directors", "writers"),
+  description = c(
+    "alphanumeric unique identifier of the title",
+    "director(s) of the given title",
+    "writer(s) of the given title"
+  )
+)
+
+title_basics_cols <- tibble(
+  column = c("tconst", "titleType", "primaryTitle", "originalTitle", "isAdult", "startYear", "endYear", "runtimeMinutes", "genres"),
+  description = c(
+    "alphanumeric unique identifier of the title",
+    "the type/format of the title (e.g. movie, short, tvseries, tvepisode, video, etc)",
+    "the more popular title / the title used by the filmmakers on promotional materials at the point of release",
+    "the original title, in the original language",
+    "0: non-adult title; 1: adult title",
+    "represents the release year of a title. In the case of TV Series, it is the series start year",
+    "TV Series end year. '\\N' for all other title types",
+    "primary runtime of the title, in minutes",
+    "includes up to three genres associated with the title"
+  )
+)
+
+title_ratings_cols <- tibble(
+  column = c("tconst", "averageRating", "numVotes"),
+  description = c(
+    "alphanumeric unique identifier of the title",
+    "weighted average of all the individual user rating",
+    "number of votes the title has received"
+  )
+)
+```
+
+
+#### handling missing values and class problems
+
+The missing values in the "imdb_movies_dataset" were indicated with the as "\\N". the code used indicated the missing values with NA. This because  functions like "rm.na" or "is.na"  were easier to work with and it makes analysis easier. Finally the class of runtimeMinutes changed into an integer and the class of startYear changed to numeric. Both these variables were classified as characters. by changing them, stats could be performed and proper comparisions could be performed as well. These changes were saved in a new csv file called: "imdb_movies.csv" 
+
+### cleaning data for the direct effect
+From the "imdb_movies.csv" dataset, the 5% extreme values in the dataset will be ignored. This because statistical models can be sensitive for extreme outliers. That is the reason why this project ignores these extreme values. This project only uses films that are created from 1990 onwards. The digital revolution started in 1990 and changed the film industry as well. New digital visual effects could be used in films because of this revolution. The observations are also filtered in a way that the na's are ignored as well. A seperate row function makes sure that every director has its own row, because there are observations that included multiple directors. Finally, three columns are added to the dataset. The column "total_runtime" which is the sum of the runtime in minutes. This way we were able to get the total_runtime of film that a director produced in its career. The second column is "avg_rating" which is the mean of the average_rating of all films that the director created. The last column is n_films column which counts the amount of films that a director has made. All these adjustements are saved in a .csv file called "imdb_movies_direct.csv". (All the steps mentioned in this paragraph are shown in the dataprep_directeffect.R rscript.)
+
+
+### cleaning the data for the moderate effect
+The "imdb_movies.csv" dataset will be used for the moderate effect as well. The data cleaning of the moderate effect is very similar to the data cleaning of the direct effect. For example, the 5% extreme values will similarly be ignored as in the direct effect because statistical models can be senstive to robust outliers. Na's will also be similarly removed and start_year is filtered from 1990 onwards. The moderate dataset makes sure that every genre has it own row. This is managed through the seperate row function that is used. Genres are also filtered by "Drama" and "Action" because these are the genres that we focus on in our research. Finally, four columns are added in the moderate effect dataset: total_runtime, avg_rating, n_films and most_common_genre. The first three columns are created in the same way as in the direct effect dataset. The most_common_genre column and it provides the most common genres. All adjustments will be saved as csv file called "imdb_movies_mod.csv". (All the steps mentioned in this paragraph are shown in the dataprep_modeeffect.R rscript.)
+
+### Conclusion of this analysis
+The data from the imdb_movies_direct.csv file was used in Analysis.R to run the linear regression for the direct effect, with avg_rating as the dependent variable and total_runtime as the independent variable. The results indicate that directors with more experience tend to receive slightly lower ratings. Although this effect is statistically significant (p < 2e-16), the adjusted R² is very low (0.00555), suggesting that director experience explains very little of the variation in movie ratings. A scatterplot created to visualize this relationship can be found in the following folder: plots/Runtime_on_average_rating.jpg.
+
+For the moderation effect, data from imdb_movies_mod.csv was used, again with avg_rating as the dependent variable and total_runtime as the independent variable in Analysis.R, while including most_common_genreDrama as a moderator. The results show that total_runtime is no longer a significant predictor on its own (p = 0.168626), but both most_common_genreDrama (p < 2e-16) and the interaction between total_runtime and most_common_genreDrama (p = 0.000716) are significant. This suggests that the relationship between director experience and rating differs by genre: for drama movies, the negative relationship between director experience and ratings is slightly stronger than for action movies. However, action movies show a slightly positive increase in the relationship between director experience and their average rating. The low adjusted R² (0.03277) makes this relationship still lack practical significance. A scatterplot created to visualize this moderation effect can also be found in the following folder: plots/Moderating_effect.jpg.
+```{r}
+setwd("../")
+imdb_movies_direct <- read_csv("gen/temp/imdb_movies_direct.csv")
+imdb_movies_mod <- read_csv("gen/temp/imdb_movies_mod.csv")
+```
+
+### Results from the linear regression
+```{r}
+linearregression_directeffect <- lm(avg_rating ~ total_runtime, data = imdb_movies_direct)
+summary(linearregression_directeffect)
+```
+```{r}
+imdb_movies_mod$most_common_genre <- factor(imdb_movies_mod$most_common_genre)
+linear_model_moderatinginteraction <- lm(avg_rating ~ total_runtime * most_common_genre,
+                               data = imdb_movies_mod)
+summary(linear_model_moderatinginteraction)
+```
+
+
+###Visualisations of the regression model
+`
+
+```{r}
+ ggplot(imdb_movies_direct, aes(x = total_runtime, y = avg_rating)) +
+  geom_point(color = "#007BFF", alpha = 1, size = 0.5) +                
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  labs(
+    title = "The relationship between total runtime and average rating",
+    x = "Total runtime (minutes)",
+    y = "Average rating"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#3A0CA3"),
+    plot.subtitle = element_text(size = 13, color = "#7209B7"),
+    axis.title = element_text(face = "bold", color = "#264653"),
+    axis.text = element_text(color = "#333333"),
+    panel.grid.major = element_line(color = "#F1F1F1"),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "#FFF9F3", color = NA),
+    panel.background = element_rect(fill = "#FFF9F3", color = NA),
+    legend.position = "right",
+    legend.background = element_rect(fill = "#FFF9F3", color = NA)
+  )
+```
+
+```{r}
+ ggplot(imdb_movies_mod, aes(x = total_runtime, y = avg_rating, color = most_common_genre)) +
+  geom_point(alpha = 0.6, size = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, linewidth = 1.2) +
+  facet_wrap(~most_common_genre) +
+  scale_color_manual(values = c("Action" = "#FF6B6B", "Drama" = "#1F77B4")) +
+  labs(
+    title = "Runtime & Genre on Average Rating, with an interaction effect",
+    x = "Total Runtime (minutes)",
+    y = "Average IMDb Rating",
+    color = "Genre"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#3A0CA3"),
+    plot.subtitle = element_text(size = 12, color = "#7209B7"),
+    axis.title = element_text(face = "bold", color = "#264653"),
+    axis.text = element_text(color = "#333333"),
+    panel.grid.major = element_line(color = "#F1F1F1"),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "#FFF9F3", color = NA),
+    panel.background = element_rect(fill = "#FFF9F3", color = NA),
+    legend.position = "right",
+    legend.background = element_rect(fill = "#FFF9F3", color = NA)
+  )
+```
+
