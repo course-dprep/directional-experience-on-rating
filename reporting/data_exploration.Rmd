@@ -144,7 +144,7 @@ ggplot(imdb_yearly, aes(x = startYear, y = mean_rating)) +
 Here we visualize the relationship between the number of user votes and the average rating.
 Highly popular movies might show different rating behavior compared to less known films.
 ```{r fig.align='center', message=FALSE, warning=FALSE, echo=FALSE}
-# Retlation between votes and rating
+# Relation between votes and rating
 ggplot(imdb_complete, aes(x = numVotes, y = averageRating)) +
   geom_point(alpha = 0.2, color = "#F5C518") +
   labs(
