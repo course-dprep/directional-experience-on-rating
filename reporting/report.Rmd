@@ -73,7 +73,7 @@ library(tibble)
 library(knitr)   
 library(gt)      
 
-# Column descriptions ----
+# Column descriptions --
 
 name_basics_cols <- tibble(
   column = c("nconst", "primaryName", "birthYear", "deathYear", "primaryProfession", "knownForTitles"),
