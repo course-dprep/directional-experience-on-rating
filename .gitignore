@@ -1,17 +1,23 @@
 # Use this file to keep certain files from being versioned (covered in the GitHub part of the course).
-#exlucing the Rhistory
+# Exlucing the Rhistory
 *.Rhistory
 
-# excluding Rdata
+# Excluding Rdata
 *.Rdata
 
-# excluding tsv
+# Excluding tsv
 *.tsv
 
-#excluding csv' s
+# Excluding csv' s
 *.csv
 
-#Excluding plots
+# Excluding plots
 *.png
 *.jpeg
 .Rproj.user
+
+# Excluding log
+*.log
+
+# Excluding pdf
+*.pdf
