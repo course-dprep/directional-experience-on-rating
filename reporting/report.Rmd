@@ -1,5 +1,5 @@
 ---
-title: "document_project_data_preparation_group10_PDFmarkup"
+title: "The effect of directional experience on IMDb ratings for movies"
 author: "Group 10"
 date: "2025-10-09"
 output: pdf_document
@@ -8,34 +8,42 @@ editor_options:
     wrap: 72
 ---
 
-Daan Bankers snr:2100281 Luc Vesters snr:2145531 Seppe Bogers
-snr:2080522 Melvin Hong snr:2146253 Wouter van der Linden snr:2116790
-Marvin Herwig snr:2138521
+Daan Bankers            snr: 2100281
+
+Luc Vesters             snr: 2145531 
+
+Seppe Bogers            snr: 2080522 
+
+Melvin Hong             snr: 2146253
+
+Wouter van der Linden   snr: 2116790
+
+Marvin Herwig           snr: 2138521
 
 ```{r analysis_packages, echo = FALSE, message=FALSE, warning=FALSE}
 #Loading packages
 library(dplyr)
-library(GGally)
 library(ggplot2)
 library(tidyr)
 library(kableExtra)
+library(tidyverse)
 setwd("../")
 ```
 
 # Does directional experience influence IMDb ratings?
 
-## Examining how director experience predicts IMDb ratings and how this relationship differs between drama and action movies.
+**Examining how director experience predicts IMDb ratings and how this relationship differs between drama and action movies.**
 
-### Introduction
+## Introduction
 
-#### Research Question
+### Research Question
 
 To what extent does a director’s experience (measured as the cumulative
 number of minutes of all movies previously directed) predict a movie’s
 IMDb rating, and is this relationship moderated by movie genre (drama
 vs. action)?
 
-#### Academically Relevant
+### Academically Relevant
 
 This study contributes to research on the movie industry by examining
 how directors’ cumulative experience predicts movie evaluations. We use
@@ -46,7 +54,7 @@ patterns. Furthermore, genre could play a crucial role, given that the
 genre drama is more critically evaluated than the genre action, which is
 more popular. This suggests genre could moderate this relationship.
 
-#### Managerially Relevant
+### Managerially Relevant
 
 For studios and investors facing uncertainty, insights into how
 directors experience influences audience rating are useful. If
@@ -56,7 +64,7 @@ managers allocate talent effectively. While technical production could
 dominate the genre drama. This reduces risk and aligns creative choices
 with market demands.
 
-#### Statistical Testing Method
+### Statistical Testing Method
 
 Multiple regression analysis is suitable for testing a metric
 independent variable(director experience) and a metric independent
@@ -65,9 +73,9 @@ drama vs. action). By applying this method, this estimates the direct
 and indirect effect in a single model. It also allows controlling for
 other factors, making the results more interpretable.
 
-### Creating the raw data set
+## Creating the raw data set
 
-#### Packages and folders
+### Packages and folders
 
 The packages that this projects needs to run are listed in the
 installpackages.R document in the rootdirectory of this project. The
@@ -75,13 +83,13 @@ download.R document makes also sure that right working directorys will
 be set and that the folders and subfolders are created and put in the
 right place.
 
-#### Datasets that will be used in this project
+### Datasets that will be used in this project
 
 This project uses datasets from IMDB movies. The following datasets from
 IMDB movies are used in this project: -name.basics.tsv -title.basics.tsv
 -title.crew.tsv -title.ratings.tsv
 
-#### Adjustments to create the raw dataset
+### Adjustments to create the raw dataset
 
 The title.basics.tsv file will be filtered immediately after it has been
 downloaded. This is because the dataset contains a variable called
@@ -100,17 +108,16 @@ this big merged datset will be saved as "imdb_movies_dataset". (The way
 of merging and saving the imdb_movies_dataset is shown in the
 clean_and_merge.R rscript).
 
-#### Operationalisation tabels
+### Operationalisation tabels
 
 Operationalisation tables are made to provide more information about the
 variables that are included in the dataset. The operationalisation
 tables are called: name_basics_cols, title_crew_cols, title_basics_cols
 and title_ratings_cols( these tables are shown below).
 
-```{r preparing_data, include=TRUE}
+```{r preparing_data, message=FALSE, warning=FALSE, echo=FALSE}
 library(tibble)
 library(knitr)   
-library(gt)      
 
 # Column descriptions --
 
@@ -126,6 +133,10 @@ name_basics_cols <- tibble(
   )
 )
 
+name_basics_cols %>%
+  kable(caption = "Name basics operationalisation table") %>%
+  kable_styling(full_width = FALSE, position = "left")
+
 title_crew_cols <- tibble(
   column = c("tconst", "directors", "writers"),
   description = c(
@@ -134,6 +145,15 @@ title_crew_cols <- tibble(
     "writer(s) of the given title"
   )
 )
+
+title_crew_cols %>%
+  kable(caption = "Title crew operationalisation table") %>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+
 
 title_basics_cols <- tibble(
   column = c("tconst", "titleType", "primaryTitle", "originalTitle", "isAdult", "startYear", "endYear", "runtimeMinutes", "genres"),
@@ -150,6 +170,12 @@ title_basics_cols <- tibble(
   )
 )
 
+title_basics_cols %>%
+  kable(caption = "Title basics operationalisation table") %>%
+  kable_styling(full_width = FALSE, position = "left") %>% 
+  column_spec(1, width = "3cm") %>% 
+  column_spec(2, width = "8cm")   
+
 title_ratings_cols <- tibble(
   column = c("tconst", "averageRating", "numVotes"),
   description = c(
@@ -158,9 +184,17 @@ title_ratings_cols <- tibble(
     "number of votes the title has received"
   )
 )
+
+title_ratings_cols %>%
+  kable(caption = "Title ratings operationalisation table") %>%
+  kable_styling(full_width = FALSE, position = "left")
+
+
 ```
 
-#### Handling missing values and class problems
+\pagebreak
+
+### Handling missing values and class problems
 
 The missing values in the "imdb_movies_dataset" were indicated with the
 as "\\N". the code used indicated the missing values with NA. This
@@ -171,7 +205,7 @@ these variables were classified as characters. by changing them, stats
 could be performed and proper comparisions could be performed as well.
 These changes were saved in a new csv file called: "imdb_movies.csv".
 
-### Cleaning data for the direct effect
+## Cleaning data for the direct effect
 
 From the "imdb_movies.csv" dataset, the 5% extreme values in the dataset
 will be ignored. This because statistical models can be sensitive for
@@ -192,7 +226,7 @@ films that a director has made. All these adjustements are saved in a
 .csv file called "imdb_movies_direct.csv". (All the steps mentioned in
 this paragraph are shown in the dataprep_directeffect.R rscript.)
 
-### Cleaning the data for the moderate effect
+## Cleaning the data for the moderate effect
 
 The "imdb_movies.csv" dataset will be used for the moderate effect as
 well. The data cleaning of the moderate effect is very similar to the
@@ -211,7 +245,7 @@ genres. All adjustments will be saved as csv file called
 "imdb_movies_mod.csv". (All the steps mentioned in this paragraph are
 shown in the dataprep_modeffect.R rscript.)
 
-### Conclusion of this analysis
+## Conclusion of this analysis
 
 The data from the imdb_movies_direct.csv file was used in Analysis.R to
 run the linear regression for the direct effect, with avg_rating as the
@@ -241,29 +275,29 @@ this relationship still lack practical significance. A scatterplot
 created to visualize this moderation effect can also be found in the
 following folder: plots/Moderating_effect.jpg.
 
-```{r}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 setwd("../")
 imdb_movies_direct <- read_csv("gen/temp/imdb_movies_direct.csv")
 imdb_movies_mod <- read_csv("gen/temp/imdb_movies_mod.csv")
 ```
 
-### Results from the linear regression
+## Results from the linear regression
 
-```{r}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 linearregression_directeffect <- lm(avg_rating ~ total_runtime, data = imdb_movies_direct)
 summary(linearregression_directeffect)
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 imdb_movies_mod$most_common_genre <- factor(imdb_movies_mod$most_common_genre)
 linear_model_moderatinginteraction <- lm(avg_rating ~ total_runtime * most_common_genre,
                                data = imdb_movies_mod)
 summary(linear_model_moderatinginteraction)
 ```
 
-### Visualisations of the regression model
+## Visualisations of the regression model
 
-```{r}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
  ggplot(imdb_movies_direct, aes(x = total_runtime, y = avg_rating)) +
   geom_point(color = "#007BFF", alpha = 1, size = 0.5) +                
   geom_smooth(method = "lm", color = "red", se = TRUE) +
@@ -287,7 +321,7 @@ summary(linear_model_moderatinginteraction)
   )
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
  ggplot(imdb_movies_mod, aes(x = total_runtime, y = avg_rating, color = most_common_genre)) +
   geom_point(alpha = 0.6, size = 0.7) +
   geom_smooth(method = "lm", se = TRUE, linewidth = 1.2) +
@@ -313,3 +347,8 @@ summary(linear_model_moderatinginteraction)
     legend.background = element_rect(fill = "#FFF9F3", color = NA)
   )
 ```
+
+## Sources
+- Francemone, C. J., Kryston, K., & Grizzard, M. (2023). Examining genre success, co-occurrence, release, and production of 9,068 films over twenty years. Poetics, 99, 101794. https://doi.org/10.1016/j.poetic.2023.101794
+- John, K., Ravid, S. A., & Sunder, J. (2014). Managerial ability and success: Evidence from the career paths of film directors. Journal Of Corporate Finance. http://dx.doi.org/10.1016/j.jcorpfin.2014.11.001
+s
