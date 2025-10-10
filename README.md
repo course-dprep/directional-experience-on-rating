@@ -147,6 +147,9 @@ make
 
 This command will run the entire workflow automatically.
 
+6. To clean the repository run ht efollowing code:
+
+make clean
 
 
 ## Processing missing values
