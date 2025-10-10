@@ -84,7 +84,6 @@ Overall we can see that the effect of director experience and ratings differ acr
 ├── reporting/
 │   ├── - rmarkdown_group10.Rmd
 │   ├── - report.Rmd
-│   └── - start_app.R
 ├── src/
 │   ├── data-preparation/
 │   │   ├── - makefile
@@ -112,6 +111,8 @@ Overall we can see that the effect of director experience and ratings differ acr
 ├── - .Rhistory
 ├── - makefile
 ├── - README.md
+├── -installpackages.R
+├── *-Rplots.pdf*
 └── - team-project-team-10.Rproj
 *are created when running the workflow*
 ```
@@ -146,7 +147,11 @@ make
 
 This command will run the entire workflow automatically.
 
+6. To clean the repository run ht efollowing code:
 
+make clean
+
+Now all generated files are deleted and you can run make again. 
 
 ## Processing missing values
 ![Image on processing missing values in the dataset IMDb_movies](plots/Missing_values_imdb_movies.jpg)
