@@ -151,6 +151,7 @@ This command will run the entire workflow automatically.
 
 make clean
 
+Now all generated files are deleted and you can run make again. 
 
 ## Processing missing values
 ![Image on processing missing values in the dataset IMDb_movies](plots/Missing_values_imdb_movies.jpg)
