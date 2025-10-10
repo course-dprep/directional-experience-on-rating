@@ -112,6 +112,8 @@ Overall we can see that the effect of director experience and ratings differ acr
 ├── - .Rhistory
 ├── - makefile
 ├── - README.md
+├── -installpackages.R
+├── *-Rplots.pdf*
 └── - team-project-team-10.Rproj
 *are created when running the workflow*
 ```
