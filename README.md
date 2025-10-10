@@ -84,7 +84,6 @@ Overall we can see that the effect of director experience and ratings differ acr
 ├── reporting/
 │   ├── - rmarkdown_group10.Rmd
 │   ├── - report.Rmd
-│   └── - start_app.R
 ├── src/
 │   ├── data-preparation/
 │   │   ├── - makefile
